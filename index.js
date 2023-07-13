@@ -86,7 +86,16 @@ app.post('/api/channels', async (req, res) => {
 
 app.post('/api/addBulk', async (req, res) => {
     let ids = req.body.ids;
-    fork('./addBulk.js', [ids.join(' ')]);
+    for (let i = 0; i < ids.length; i++) {
+        if (!ids[i].startsWith('UC')) {
+            ids.splice(i, 1);
+            i -= 1;
+        } else if (ids[i].length != 24) {
+            ids.splice(i, 1);
+            i -= 1;
+        }
+    }
+    addUser(null, ids);
     res.send({
         error: false,
         message: 'Adding channels'

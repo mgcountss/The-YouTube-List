@@ -85,7 +85,7 @@ hr {
 }
 
 .add {
-    font-size: 2vw;
+    font-size: 3vw;
     margin-bottom: .5vw
 }
 
@@ -262,4 +262,31 @@ button,
 option,
 select {
     color: #000
+}
+
+.grid4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 1vw;
+    margin-top: 0.3vw;
+    margin-bottom: 0.3vw;
+}
+
+h4 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.stat {
+    font-size: 2vw;
+}
+
+.container {
+    margin-top: 0.3vw;
+    margin-bottom: 0.3vw;
+}
+
+.example {
+    height: 7%;
+    width: 90%;
 }

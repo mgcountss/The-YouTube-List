@@ -1,4 +1,5 @@
 let offset = 0;
+let num = 5;
 let end = false;
 let searching = false;
 let sort1 = 'subscribers';
@@ -21,16 +22,17 @@ async function getChannels() {
                     end = true;
                 } else {
                     searching = false;
-                    data.forEach(channel => {
+                    data.forEach((channel) => {
+                        num++;
                         if (ids.includes(channel.user.id)) return;
                         let card = document.createElement('div');
                         card.classList.add('card');
                         card.innerHTML = `
                     <div class="banner" style="background-image: url('${channel.user.banner}')">
-                        <img src="${channel.user.logo}" class="logo" alt="${channel.user.name} logo" onerror="imgError('avatar', this)">
+                        <img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)">
                     </div>
                     <div class="card-body">
-                        <h3 class="name">${channel.user.name}</h3><hr>
+                        <h3 class="name""><b class="rank">#${(num)}</b> ${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3>
                         <div class="stats">
                             <div>
                                 <h4 class="subscribers">${channel.stats.subscribers.toLocaleString()}</h4>
@@ -81,6 +83,8 @@ function addChannel() {
 
 function closePopup() {
     document.querySelector('.popup').style.display = 'none';
+    document.getElementById('popup-content').style.display = 'block';
+    document.getElementById('popup-content2').style.display = 'none';
 }
 
 let searchPage = 1;
@@ -111,7 +115,7 @@ function searchChannel(handle, that) {
                 document.getElementById('results').innerHTML += pages;
             } else {
                 if (that) {
-                    that.remove();
+                    that.innerHTML = 'Added';
                 }
                 alert(data.message);
             }
@@ -123,14 +127,15 @@ async function loadSearch(user) {
     let card = document.createElement('div');
     card.classList.add('card');
     let unadded = `<button class="search_button" onclick="searchChannel('${user.id}', this)">Add</button>`
+    let added = `<button class="search_button" disabled>Added</button>`
     let http = user.image.startsWith('https') ? '' : 'https:';
     card.innerHTML = `
     <img class="search_avatar" src="${http}${user.image}" alt="avatar" onerror="imgError('avatar', this)">
     <div class="search_info">
-        <h3 class="search_name">${user.title}</h3>
+        <h3 class="search_name">${user.title.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3>
         <h3 class="search_handle">${user.handle}</h3>
         <h3 class="search_stats">${fix(user.subscribers)}</h3>
-        ${user.added ? '' : unadded}
+        ${user.added ? added : unadded}
     </div>`
     document.getElementById('results').appendChild(card);
 }
@@ -214,6 +219,26 @@ function addBulk() {
 
 function searchBulk() {
     if (document.getElementById('bulk').value.length > 0) {
+        let bulk = document.getElementById('bulk').value
+        bulk = bulk.replace(/\n/g, ',');
+        bulk = bulk.split(',');
+        console.log(bulk);
+        for (let i = 0; i < bulk.length; i++) {
+            bulk[i] = bulk[i].replace(/ /g, '');
+            if (!bulk[i].startsWith('UC')) {
+                bulk.splice(i, 1);
+                i -= 1;
+            } else if (bulk[i].length != 24) {
+                bulk.splice(i, 1);
+                i -= 1;
+            } else if (ids.includes(bulk[i])) {
+                bulk.splice(i, 1);
+                i -= 1;
+            } else if (bulk[i] == '') {
+                bulk.splice(i, 1);
+                i -= 1;
+            }
+        }
         document.getElementById('popup-content2').style.display = 'none';
         document.getElementById('popup-content').style.display = 'block';
         fetch('/api/addBulk', {
@@ -221,7 +246,7 @@ function searchBulk() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ ids: document.getElementById('bulk').value.split(',') })
+            body: JSON.stringify({ ids: bulk })
         }).then(res => res.json())
             .then(data => {
                 if (data.error) {

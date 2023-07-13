@@ -101,9 +101,36 @@ const find2 = async (json) => {
 const getTotalDocuments = async () => {
   try {
     const count = await User.countDocuments();
-    return count;
+    const totalSubscribers = await User.aggregate([{ $group: { _id: null, total: { $sum: "$stats.subscribers" } } }]);
+    const totalViews = await User.aggregate([{ $group: { _id: null, total: { $sum: "$stats.views" } } }]);
+    const totalVideos = await User.aggregate([{ $group: { _id: null, total: { $sum: "$stats.videos" } } }]);
+    return {
+      count: count,
+      totalSubscribers: totalSubscribers[0].total,
+      totalViews: totalViews[0].total,
+      totalVideos: totalVideos[0].total
+    };
   } catch (error) { }
 };
+
+const checkIds = async (ids) => {
+  try {
+    let users = await User.find({ id: { $in: ids } }, { id: 1, _id: 0 });
+    let ids2 = [];
+    for (let user of users) {
+      ids2.push(user.id);
+    }
+    return ids.filter(id => !ids2.includes(id));
+  } catch (error) { }
+};
+
+const getNewestDocument = async () => {
+    try {
+        const document = await User.findOne({}, { id: 1, _id: 1 }).sort({ created: -1 });
+        if (document) return document;
+        return null;
+    } catch (error) { }
+}
 
 export default {
   add,
@@ -112,5 +139,6 @@ export default {
   getall,
   update,
   getall2,
-  getTotalDocuments
+  getTotalDocuments,
+  checkIds
 };

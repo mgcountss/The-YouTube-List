@@ -19,23 +19,52 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@sfmg_" />
     <meta name="twitter:title" content="The YouTube List" />
-    <meta name="twitter:description" content="A list of YouTube channels, sort by subscribers, views, videos, and more!" />
+    <meta name="twitter:description"
+        content="A list of YouTube channels, sort by subscribers, views, videos, and more!" />
     <meta name="twitter:image" content="https://list.mgcounts.com/images/preview.png" />
     <meta property="og:title" content="The YouTube List" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://list.mgcounts.com/" />
     <meta property="og:image" content="https://list.mgcounts.com/images/preview.png" />
-    <meta property="og:description" content="A list of YouTube channels, sort by subscribers, views, videos, and more!" />
+    <meta property="og:description"
+        content="A list of YouTube channels, sort by subscribers, views, videos, and more!" />
 </head>
 
 <body>
     <center>
         <h1 class="title">The YouTube List</h1>
-        <p>There are currently <%= total.toLocaleString() %> channels in the list!</p>
         <p>Scroll down the list to reveal more channels!</p>
-        <button class="add" onclick="addChannel()">Add Channel!</button>
+        <button class="add" onclick="addChannel()">Add Channel!</button><br>
+        <button onclick="window.location.href = 'https://discord.gg/8PkS22yDJM'" class="discord">Join the Discord for support!</button>
+        <br><hr>
+        <div class="grid4">
+            <div>
+                <h4>Total Channels</h4>
+                <h5 class="stat">
+                    <%= total.count.toLocaleString() %>
+                </h5>
+            </div>
+            <div>
+                <h4>Total Subscribers</h4>
+                <h5 class="stat">
+                    <%= total.totalSubscribers.toLocaleString() %>
+                </h5>
+            </div>
+            <div>
+                <h4>Total Views</h4>
+                <h5 class="stat">
+                    <%= total.totalViews.toLocaleString() %>
+                </h5>
+            </div>
+            <div>
+                <h4>Total Videos</h4>
+                <h5 class="stat">
+                    <%= total.totalVideos.toLocaleString() %>
+                </h5>
+            </div>
+        </div>
+        <hr>
     </center>
-    <hr>
     <div class="container">
         <input type="text" id="search" placeholder="Search for a channel..." autocomplete="off">
         <select id="sort1" autocomplete="off">
@@ -66,16 +95,17 @@
         </select>
         <button onclick="search()" class="search">Search</button>
     </div>
+    <hr>
     <center>
         <div class="channels" id="channels">
-            <% users.forEach((channel)=> { %>
+            <% users.forEach((channel, q)=> { %>
                 <div class="card">
                     <div class="banner" style="background-image: url('<%=channel.user.banner%>')">
                         <img src="<%=channel.user.logo%>" class="logo" alt="<%=channel.user.name%> logo"
                             onerror="imgError('avatar', this)">
                     </div>
                     <div class="card-body">
-                        <h3 class="name">
+                        <h3 class="name"><b class="rank">#<%=(q+1)%></b>
                             <%=channel.user.name%>
                         </h3>
                         <hr>
@@ -135,8 +165,10 @@
                 <div id="results"></div>
             </div>
             <div id="popup-content2" class="popup-content">
-                <p>List should be a list of channel IDs, separated by commas.</p>
-                <label>Example: <span class="spanList">UCSgk1g0AZi9_759yfz-iIHg,UCSgk1g0AZi9_759yfz-iIHg</span></label>
+                <p>The list should be a list of channel IDs, separated by commas (OR it could be all on one line separated by commas)</p>
+                <label>Example:</label><br>
+                <textarea class="example" autocomplete="off" readonly>UCSgk1g0AZi9_759yfz-iIHg,&#013;&#010;UCSgk1g0AZi9_759yfz-iIHg</textarea>
+                <hr>
                 <br><textarea id="bulk" placeholder="Paste your list here..."></textarea><br>
                 <button class="search2" onclick="searchBulk()">Submit</button>
             </div>
