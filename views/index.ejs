@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>The YouTube List</title>
+    <link href="css/style.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="A list of YouTube channels, sort by subscribers, views, videos, and more!">
+    <meta name="keywords" content="youtube, list, channels, sort, subscribers, views, videos, joined, name, country">
+    <meta name="author" content="AJ">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@sfmg_" />
+    <meta name="twitter:title" content="The YouTube List" />
+    <meta name="twitter:description" content="A list of YouTube channels, sort by subscribers, views, videos, and more!" />
+    <meta name="twitter:image" content="https://list.mgcounts.com/images/preview.png" />
+    <meta property="og:title" content="The YouTube List" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://list.mgcounts.com/" />
+    <meta property="og:image" content="https://list.mgcounts.com/images/preview.png" />
+    <meta property="og:description" content="A list of YouTube channels, sort by subscribers, views, videos, and more!" />
+</head>
+
+<body>
+    <center>
+        <h1 class="title">The YouTube List</h1>
+        <p>There are currently <%= total.toLocaleString() %> channels in the list!</p>
+        <p>Scroll down the list to reveal more channels!</p>
+        <button class="add" onclick="addChannel()">Add Channel!</button>
+    </center>
+    <hr>
+    <div class="container">
+        <input type="text" id="search" placeholder="Search for a channel..." autocomplete="off">
+        <select id="sort1" autocomplete="off">
+            <option value="">Primary Sort by...</option>
+            <option value="subscribers">Subscribers</option>
+            <option value="views">Views</option>
+            <option value="videos">Videos</option>
+            <option value="joined">Joined</option>
+            <option value="name">Name</option>
+            <option value="country">Country</option>
+        </select>
+        <select id="order1" autocomplete="off">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+        </select>
+        <select id="sort2" autocomplete="off">
+            <option value="">Secondary Sort by...</option>
+            <option value="subscribers">Subscribers</option>
+            <option value="views">Views</option>
+            <option value="videos">Videos</option>
+            <option value="joined">Joined</option>
+            <option value="name">Name</option>
+            <option value="country">Country</option>
+        </select>
+        <select id="order2" autocomplete="off">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+        </select>
+        <button onclick="search()" class="search">Search</button>
+    </div>
+    <center>
+        <div class="channels" id="channels">
+            <% users.forEach((channel)=> { %>
+                <div class="card">
+                    <div class="banner" style="background-image: url('<%=channel.user.banner%>')">
+                        <img src="<%=channel.user.logo%>" class="logo" alt="<%=channel.user.name%> logo"
+                            onerror="imgError('avatar', this)">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="name">
+                            <%=channel.user.name%>
+                        </h3>
+                        <hr>
+                        <div class="stats">
+                            <div>
+                                <h4 class="subscribers">
+                                    <%=channel.stats.subscribers.toLocaleString()%>
+                                </h4>
+                                <h5>Subscribers</h5>
+                            </div>
+                            <div>
+                                <h4 class="views">
+                                    <%=channel.stats.views.toLocaleString()%>
+                                </h4>
+                                <h5>Views</h5>
+                            </div>
+                            <div>
+                                <h4 class="videos">
+                                    <%=channel.stats.videos.toLocaleString()%>
+                                </h4>
+                                <h5>Videos</h5>
+                            </div>
+                            <div>
+                                <h4 class="country">
+                                    <%=channel.user.country ? channel.user.country : 'N/A' %>
+                                </h4>
+                                <h5>Country</h5>
+                            </div>
+                            <div>
+                                <h4 class="country">
+                                    <%=new Date(channel.user.joined).toString().split('GMT')[0]%>
+                                </h4>
+                                <h5>Joined</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <textarea class="description"><%=channel.user.description%></textarea>
+                </div>
+                <% }) %>
+        </div>
+    </center>
+    <div id="popup" class="popup">
+        <div class="popup2">
+            <center>
+                <div class="popup-header">
+                    <button class="addBulk" onclick="addBulk()">Add Bulk</button>
+                    <h1 class="addChannel">Add Channel</h1>
+                    <button class="close" onclick="closePopup()">Exit Tab</button>
+                </div>
+            </center>
+            <div id="popup-content" class="popup-content">
+                <input type="text" id="name" placeholder="Name/@Handle/Channel ID"><br>
+                <button class="search2" onclick="searchChannel()">Search</button>
+                <br><br>
+                <hr>
+                <div id="results"></div>
+            </div>
+            <div id="popup-content2" class="popup-content">
+                <p>List should be a list of channel IDs, separated by commas.</p>
+                <label>Example: <span class="spanList">UCSgk1g0AZi9_759yfz-iIHg,UCSgk1g0AZi9_759yfz-iIHg</span></label>
+                <br><textarea id="bulk" placeholder="Paste your list here..."></textarea><br>
+                <button class="search2" onclick="searchBulk()">Submit</button>
+            </div>
+        </div>
+    </div>
+    <div id="loader" class="loaderBack">
+        <div class="loading"></div>
+    </div>
+    <script src="js/fix.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

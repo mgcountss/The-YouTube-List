@@ -1,0 +1,265 @@
+body {
+    background-color: #f1f1f1;
+    font-family: Arial, Helvetica, sans-serif
+}
+
+* {
+    box-sizing: border-box
+}
+
+h1,
+p {
+    text-align: center
+}
+
+.card {
+    background-color: #fff;
+    padding: 1vw;
+    margin-top: 1vw;
+    border: 1px solid #ccc;
+    width: 48vw
+}
+
+.banner {
+    width: 100%;
+    height: 15vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+@media screen and (max-width:600px) {
+    .banner {
+        height: 7vh
+    }
+}
+
+.name {
+    margin-left: 0;
+    font-size: 2vw;
+    margin-top: 0;
+    font-weight: bolder;
+    margin-bottom: 0
+}
+
+h4 {
+    font-size: 1.5vw;
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+h5 {
+    font-size: 1vw;
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+.logo {
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: solid #000 .3vw
+}
+
+.stats {
+    margin-top: 0;
+    margin-bottom: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr
+}
+
+hr {
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+.description {
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 100%;
+    font-size: 1vw;
+    overflow: hidden;
+    resize: vertical
+}
+
+.add {
+    font-size: 2vw;
+    margin-bottom: .5vw
+}
+
+.popup {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, .5);
+    display: none;
+    justify-content: center;
+    align-items: center
+}
+
+.loaderBack {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, .3);
+    display: none;
+    justify-content: center;
+    align-items: center
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+.loading {
+    border: 1vw solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 1vw solid #3498db;
+    animation: loading 2s linear infinite;
+    width: 10vw;
+    height: 10vw;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -5vw;
+    margin-left: -5vw
+}
+
+.popup2 {
+    position: fixed;
+    width: 50%;
+    height: 75%;
+    top: 20%;
+    left: 25%;
+    background-color: #fff;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 3%;
+    border: solid 4px #000;
+    overflow-x: scroll
+}
+
+#name {
+    width: 95%;
+    height: 10%;
+    font-size: 2vw;
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+.search2 {
+    width: 95%;
+    height: 10%;
+    font-size: 2vw;
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    margin-top: 0
+}
+
+.close {
+    font-size: 2vw;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    background-color: transparent;
+    border: none;
+    cursor: pointer
+}
+
+.addBulk {
+    font-size: 2vw;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    background-color: transparent;
+    border: none;
+    cursor: pointer
+}
+
+.addChannel {
+    margin-left: 0;
+    font-size: 3vw
+}
+
+.search_handle,
+.search_name,
+.search_stats {
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+.search_avatar {
+    height: 7vw;
+    width: 7vw
+}
+
+.search_name {
+    font-size: 1.5vw
+}
+
+.search_handle {
+    font-size: 1vw
+}
+
+.search_stats {
+    font-size: 1vw;
+    margin-bottom: .5vw
+}
+
+.search_button {
+    font-size: 2vw
+}
+
+.title {
+    font-size: 3vw;
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+#bulk {
+    width: 95%;
+    height: 10%;
+    font-size: 1vw;
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+.spanList {
+    background-color: #000;
+    color: #fff
+}
+
+#popup-content2 {
+    display: none
+}
+
+.channels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1vw
+}
+
+button,
+option,
+select {
+    color: #000
+}
