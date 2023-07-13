@@ -23,16 +23,16 @@ let User = mongoose.model('users', userSchema);
 
 const add = async (json) => {
   try {
-    User.findOne({ id: json.id }, async (err, doc) => {
-      if (err) throw err;
-      if (doc) {
-        await User.updateOne({ id: json.id }, { $set: json });
-      } else {
-        let newUser = new User(json);
-        await newUser.save();
-      }
-    });
-  } catch (error) { }
+    let user = await User.findOne({ id: json.id })
+    if (user) {
+      await User.updateOne({ id: json.id }, { $set: json });
+    } else {
+      let newUser = new User(json);
+      await newUser.save();
+    }
+  } catch (error) {
+    console.log(error)
+  }
 };
 
 const update = async (id, value) => {

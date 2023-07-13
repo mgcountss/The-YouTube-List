@@ -85,7 +85,7 @@ function closePopup() {
 
 let searchPage = 1;
 let searchResults = [];
-function searchChannel(handle) {
+function searchChannel(handle, that) {
     fetch('/api/add', {
         method: 'POST',
         headers: {
@@ -110,6 +110,9 @@ function searchChannel(handle) {
                 <button class="page" onclick="nextPage()">></button></div></center>`;
                 document.getElementById('results').innerHTML += pages;
             } else {
+                if (that) {
+                    that.remove();
+                }
                 alert(data.message);
             }
         })
@@ -119,7 +122,7 @@ function searchChannel(handle) {
 async function loadSearch(user) {
     let card = document.createElement('div');
     card.classList.add('card');
-    let unadded = `<button class="search_button" onclick="searchChannel('${user.id}')">Add</button>`
+    let unadded = `<button class="search_button" onclick="searchChannel('${user.id}', this)">Add</button>`
     let http = user.image.startsWith('https') ? '' : 'https:';
     card.innerHTML = `
     <img class="search_avatar" src="${http}${user.image}" alt="avatar" onerror="imgError('avatar', this)">
