@@ -19,7 +19,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 app.get('/', async (req, res) => {
-    res.render('index', { users: await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' }), total: await db.getTotalDocuments() });
+    let users = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
+    let ids = users.map(user => user.id);
+    res.render('index', { users: users, total: await db.getTotalDocuments(), ids: ids });
 });
 app.get('/favicons/*', (req, res) => {
     res.sendFile(__dirname + req.path);
@@ -84,17 +86,7 @@ app.post('/api/channels', async (req, res) => {
 
 app.post('/api/addBulk', async (req, res) => {
     let ids = req.body.ids;
-    for (let i = 0; i < ids.length; i++) {
-        if (!ids[i].startsWith('UC')) {
-            ids.splice(i, 1);
-            i -= 1;
-        } else if (ids[i].length != 24) {
-            ids.splice(i, 1);
-            i -= 1;
-        } else {
-            addUser(ids[i]);
-        }
-    }
+    fork('./addBulk.js', [ids.join(' ')]);
     res.send({
         error: false,
         message: 'Adding channels'
@@ -110,7 +102,7 @@ setInterval(() => {
     if (new Date().getHours() != lastHour) {
         lastHour = new Date().getHours();
         if (lastHour === 0 || lastHour === 12) {
-            fork('./functions/updateAll.js');
+            fork('./updateAll.js');
         }
     }
 }, 60000);

@@ -22,6 +22,7 @@ async function getChannels() {
                 } else {
                     searching = false;
                     data.forEach(channel => {
+                        if (ids.includes(channel.user.id)) return;
                         let card = document.createElement('div');
                         card.classList.add('card');
                         card.innerHTML = `

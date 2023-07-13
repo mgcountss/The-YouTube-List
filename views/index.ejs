@@ -145,6 +145,11 @@
     <div id="loader" class="loaderBack">
         <div class="loading"></div>
     </div>
+    <% console.log(ids) %>
+    <script>
+        var ids = "<%= JSON.stringify(ids) %>"
+        ids = JSON.parse(ids.split('&#34;').join('"'));
+    </script>
     <script src="js/fix.js"></script>
     <script src="js/main.js"></script>
 </body>

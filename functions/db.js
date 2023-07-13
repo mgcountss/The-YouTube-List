@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
-await mongoose.connect('mongodb://'+process.env.MONGO_URL, {
+await mongoose.connect('mongodb://' + process.env.MONGO_URL, {
   useNewUrlParser: true,
   authSource: 'admin',
   user: process.env.MONGO_USER,
@@ -23,15 +23,22 @@ let User = mongoose.model('users', userSchema);
 
 const add = async (json) => {
   try {
-    let newUser = new User(json);
-    await newUser.save();
-  } catch (error) {}
+    User.findOne({ id: json.id }, async (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        await User.updateOne({ id: json.id }, { $set: json });
+      } else {
+        let newUser = new User(json);
+        await newUser.save();
+      }
+    });
+  } catch (error) { }
 };
 
 const update = async (id, value) => {
   try {
     await User.updateOne({ id: id }, { $set: value });
-  } catch (error) {}
+  } catch (error) { }
 }
 
 const find = async (type, value) => {
@@ -39,15 +46,32 @@ const find = async (type, value) => {
     const document = await User.findOne({ [type]: value });
     if (document) return document;
     return null;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const getall = async () => {
   try {
     const documents = await User.find({}, { id: 1, _id: 1 });
     return documents;
-  } catch (error) {}
+  } catch (error) { }
 };
+
+//remove all duplicates
+const removeDuplicates = async () => {
+  try {
+    let users = await User.find();
+    let ids = [];
+    for (let user of users) {
+      if (ids.includes(user.id)) {
+        await User.deleteOne({ id: user.id });
+      } else {
+        ids.push(user.id);
+      }
+    }
+  } catch (error) { }
+};
+
+removeDuplicates()
 
 const getall2 = async (options) => {
   try {
@@ -64,21 +88,21 @@ const getall2 = async (options) => {
         [sort2]: options.order2 === "asc" ? 1 : -1,
       }).limit(options.limit).skip(options.offset);
     return documents;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const find2 = async (json) => {
   try {
     const documents = await User.find(json);
     return documents;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const getTotalDocuments = async () => {
   try {
     const count = await User.countDocuments();
     return count;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export default {
