@@ -1,5 +1,4 @@
 let offset = 0;
-let num = 5;
 let end = false;
 let searching = false;
 let sort1 = 'subscribers';
@@ -23,7 +22,6 @@ async function getChannels() {
                 } else {
                     searching = false;
                     data.forEach((channel) => {
-                        num++;
                         if (ids.includes(channel.user.id)) return;
                         let card = document.createElement('div');
                         card.classList.add('card');
@@ -32,7 +30,7 @@ async function getChannels() {
                         <img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)">
                     </div>
                     <div class="card-body">
-                        <h3 class="name""><b class="rank">#${(num)}</b> ${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3>
+                        <h3 class="name">${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3>
                         <div class="stats">
                             <div>
                                 <h4 class="subscribers">${channel.stats.subscribers.toLocaleString()}</h4>
