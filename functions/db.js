@@ -92,6 +92,17 @@ const getall2 = async (options) => {
   } catch (error) { }
 };
 
+const getall3 = async () => {
+  try {
+    let documents = await User.find({}, { "user.name": 1, "stats.subscribers": 1 })
+      .sort({
+        "stats.subscribers": -1,
+        "user.name": 1
+      });
+    return documents;
+  } catch (error) { }
+};
+
 const find2 = async (json) => {
   try {
     const documents = await User.find(json);
@@ -141,5 +152,6 @@ export default {
   update,
   getall2,
   getTotalDocuments,
-  checkIds
+  checkIds,
+  getall3,
 };

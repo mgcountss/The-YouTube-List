@@ -26,6 +26,20 @@ app.get('/', async (req, res) => {
     cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
     totalCache = await db.getTotalDocuments();
 });
+/*let cache3 = []
+app.get('/bar', async (req, res) => {
+    if (!cache3) {
+        res.send('No data yet');
+    }
+    res.render('bar', { data: cache3 });
+    cache3 = await db.getall3();
+    for (let q = 0; q < cache3.length; q++) {
+        cache3[q] = {
+            value: cache3[q].stats.subscribers,
+            name: cache3[q].user.name
+        }
+    }
+});*/
 app.get('/favicons/*', (req, res) => {
     res.sendFile(__dirname + req.path);
 });
@@ -118,7 +132,6 @@ setInterval(() => {
         }
     }
 }, 60000);
-fork('./updateAll.js');
 
 app.listen(3002, () => {
     console.log('Server running on port 3002');

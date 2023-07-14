@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>The YouTube List</title>
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css?update=8a679042-e1ae-4bf6-8ee4-e5541f50a4c0" rel="stylesheet" id="themeLink"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
@@ -35,9 +35,12 @@
         <h1 class="title">The YouTube List</h1>
         <p>Scroll down the list to reveal more channels!</p>
         <button class="add" onclick="addChannel()">Add Channel!</button><br>
-        <button onclick="window.location.href = 'https://discord.gg/8PkS22yDJM'" class="discord">Join the Discord!</button>
-        <button onclick="window.location.href = 'https://github.com/mgcountss/The-YouTube-List'">Contribute on GitHub!</button>
-        <br><hr>
+        <button onclick="window.location.href = 'https://discord.gg/8PkS22yDJM'" class="discord">Join the
+            Discord!</button>
+        <button onclick="window.location.href = 'https://github.com/mgcountss/The-YouTube-List'">Contribute on
+            GitHub!</button>
+        <br>
+        <hr>
         <div class="grid4">
             <div>
                 <h4>Total Channels</h4>
@@ -95,6 +98,7 @@
             <option value="asc">Ascending</option>
         </select>
         <button onclick="search()" class="search">Search</button>
+        <button style="float: right;" onclick="settings()">Settings</button>
     </div>
     <hr>
     <center>
@@ -166,24 +170,35 @@
                 <div id="results"></div>
             </div>
             <div id="popup-content2" class="popup-content">
-                <p>The list should be a list of channel IDs, separated by commas (OR it could be all on one line separated by commas)</p>
+                <p>The list should be a list of channel IDs, separated by commas (OR it could be all on one line
+                    separated by commas)</p>
                 <label>Example:</label><br>
-                <textarea class="example" autocomplete="off" readonly>UCSgk1g0AZi9_759yfz-iIHg,&#013;&#010;UCSgk1g0AZi9_759yfz-iIHg</textarea>
+                <textarea class="example" autocomplete="off"
+                    readonly>UCSgk1g0AZi9_759yfz-iIHg,&#013;&#010;UCSgk1g0AZi9_759yfz-iIHg</textarea>
                 <hr>
                 <br><textarea id="bulk" placeholder="Paste your list here..."></textarea><br>
                 <button class="search2" onclick="searchBulk()">Submit</button>
             </div>
         </div>
     </div>
+    <div id="settings" class="settings">
+        <div class="settings2">
+            <center>
+                <button class="close" onclick="closePopup2()">Exit Tab</button><br>
+                <button id="theme" onclick="changeTheme()" style="float: left;">Dark Mode</button>
+                <div style="float: right;">
+                <button id="mode" onclick="changeMode()">List Mode</button><br>
+                <label>This will reload the page</label>
+                </div>
+            </center>
+        </div>
+    </div>
     <div id="loader" class="loaderBack">
         <div class="loading"></div>
     </div>
-    <script>
-        var ids = "<%= JSON.stringify(ids) %>"
-        ids = JSON.parse(ids.split('&#34;').join('"'));
-    </script>
+    <%- include('imports.ejs') %>
     <script src="js/fix.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js?update=8a679042-e1ae-4bf6-8ee4-e5541f50a4c0"></script>
 </body>
 
 </html>

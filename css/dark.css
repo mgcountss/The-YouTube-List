@@ -1,7 +1,7 @@
 body {
-    background-color: #f1f1f1;
+    background-color: #1f1f1f;
     font-family: Arial, Helvetica, sans-serif;
-    color: #000
+    color: #fff
 }
 
 * {
@@ -14,10 +14,10 @@ p {
 }
 
 .card {
-    background-color: #fff;
+    background-color: #000;
     padding: 1vw;
     margin-top: 1vw;
-    border: 1px solid #ccc;
+    border: 1px solid #232323;
     width: 48vw
 }
 
@@ -61,7 +61,7 @@ h5 {
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    border: solid #000 .3vw
+    border: solid #FFF .3vw
 }
 
 .stats {
@@ -96,7 +96,7 @@ hr {
     height: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(255, 255, 255, .5);
     display: none;
     justify-content: center;
     align-items: center
@@ -108,7 +108,7 @@ hr {
     height: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, .3);
+    background-color: rgba(255, 255, 255, .3);
     display: none;
     justify-content: center;
     align-items: center
@@ -144,12 +144,12 @@ hr {
     height: 75%;
     top: 20%;
     left: 25%;
-    background-color: #fff;
+    background-color: #000;
     justify-content: center;
     align-items: center;
     text-align: center;
     border-radius: 3%;
-    border: solid 4px #000;
+    border: solid 4px #FFF;
     overflow-x: scroll
 }
 
@@ -184,7 +184,7 @@ hr {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    color: #000;
+    color: #FFF;
 }
 
 .addBulk {
@@ -195,7 +195,7 @@ hr {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    color: #000;
+    color: #FFF;
 }
 
 .addChannel {
@@ -247,8 +247,8 @@ hr {
 }
 
 .spanList {
-    background-color: #000;
-    color: #fff
+    background-color: #FFF;
+    color: #000
 }
 
 #popup-content2 {
@@ -300,7 +300,7 @@ h4 {
     height: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(255, 255, 255, .5);
     display: none;
     justify-content: center;
     align-items: center
@@ -312,12 +312,12 @@ h4 {
     height: 75%;
     top: 20%;
     left: 25%;
-    background-color: #fff;
+    background-color: #000;
     justify-content: center;
     align-items: center;
     text-align: center;
     border-radius: 3%;
-    border: solid 4px #000;
+    border: solid 4px #FFF;
     overflow-x: scroll
 }
 
@@ -327,7 +327,7 @@ h4 {
 
 tr, td, th {
     width: 12vw;
-    border: solid 1px #000;
+    border: solid 1px #FFF;
 }
 
 table {

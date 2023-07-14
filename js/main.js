@@ -21,12 +21,31 @@ async function getChannels() {
                     end = true;
                 } else {
                     searching = false;
-                    data.forEach((channel) => {
-                        if (ids.includes(channel.id)) return;
-                        ids.push(channel.id);
-                        let card = document.createElement('div');
-                        card.classList.add('card');
-                        card.innerHTML = `
+                    if (localStorage.getItem('mode') == 'list') {
+                        data.forEach((channel) => {
+                            if (ids.includes(channel.id)) return;
+                            ids.push(channel.id);
+                            channels.push(channel);
+                            let row = document.createElement('tr');
+                            row.innerHTML = `
+                    <td><img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)"></td>
+                    <td><h3 class="name">${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3></td>
+                    <td><h4 class="subscribers">${channel.stats.subscribers.toLocaleString()}</h4></td>
+                    <td><h4 class="views">${channel.stats.views.toLocaleString()}</h4></td>
+                    <td><h4 class="videos">${channel.stats.videos.toLocaleString()}</h4></td>
+                    <td><h4 class="country">${channel.user.country}</h4></td>
+                    <td><h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4></td>
+                    <td><textarea class="description">${channel.user.description}</textarea></td>`;
+                            document.getElementById('table').appendChild(row);
+                        })
+                    } else {
+                        data.forEach((channel) => {
+                            if (ids.includes(channel.id)) return;
+                            ids.push(channel.id);
+                            channels.push(channel)
+                            let card = document.createElement('div');
+                            card.classList.add('card');
+                            card.innerHTML = `
                     <div class="banner" style="background-image: url('${channel.user.banner}')">
                         <img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)">
                     </div>
@@ -50,14 +69,15 @@ async function getChannels() {
                                 <h5>Country</h5>
                             </div>
                             <div>
-                                <h4 class="country">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4>
+                                <h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4>
                                 <h5>Joined</h5>
                             </div>
                         </div>
                     </div><hr>
                     <textarea class="description">${channel.user.description}</textarea>`;
-                        document.querySelector('.channels').appendChild(card);
-                    });
+                            document.querySelector('.channels').appendChild(card);
+                        });
+                    }
                 }
             }
         }).catch(err => console.error(err));
@@ -65,6 +85,8 @@ async function getChannels() {
 
 function search() {
     offset = 0;
+    ids = [];
+    channels = [];
     end = false;
     document.querySelector('.channels').innerHTML = '';
     sort1 = document.getElementById('sort1').value;
@@ -246,3 +268,69 @@ function searchBulk() {
         document.getElementById('popup-content').style.display = 'block';
     }
 }
+
+function settings() {
+    document.getElementById('settings').style.display = 'flex';
+}
+
+function closePopup2() {
+    document.getElementById('settings').style.display = 'none';
+}
+
+function changeTheme(a) {
+    if (a) {
+        if (localStorage.getItem('theme') == 'dark') {
+            document.getElementById('themeLink').href = '/css/dark.css';
+            document.getElementById('theme').innerHTML = 'Light Mode';
+        }
+    } else {
+        if (localStorage.getItem('theme') == 'dark') {
+            localStorage.setItem('theme', 'light');
+            document.getElementById('themeLink').href = '/css/style.css';
+            document.getElementById('theme').innerHTML = 'Dark Mode';
+        } else {
+            localStorage.setItem('theme', 'dark');
+            document.getElementById('themeLink').href = '/css/dark.css';
+            document.getElementById('theme').innerHTML = 'Light Mode';
+        }
+    }
+}
+
+function changeMode(a) {
+    if (a) {
+        if (localStorage.getItem('mode') == 'list') {
+            document.getElementById('mode').innerHTML = 'Grid View';
+            offset = 0;
+            ids = [];
+            channels = [];
+            document.querySelector('.channels').style.gridTemplateColumns = '1fr';
+            document.getElementById('channels').innerHTML = `<table class="table" id="table">
+            <tr>
+                <th>Logo</th>
+                <th>Name</th>
+                <th>Subscribers</th>
+                <th>Views</th>
+                <th>Videos</th>
+                <th>Country</th>
+                <th>Joined</th>
+                <th>Description</th>
+            </tr>
+            </table>`
+            getChannels();
+        } else {
+            document.getElementById('mode').innerHTML = 'List View';
+        }
+    } else {
+        if (localStorage.getItem('mode') == 'grid') {
+            localStorage.setItem('mode', 'list');
+            document.getElementById('mode').innerHTML = 'Grid View';
+            location.reload();
+        } else {
+            localStorage.setItem('mode', 'list');
+            document.getElementById('mode').innerHTML = 'Grid View';
+            location.reload();
+        }
+    }
+}
+changeTheme('init')
+changeMode('init')
