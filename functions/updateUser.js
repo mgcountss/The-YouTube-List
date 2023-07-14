@@ -51,7 +51,9 @@ const updateUser = async (userId, ids) => {
                     }
                 })
                 .catch((error) => {
-                    console.log(error);
+                    if (error.response.status == 403) {
+                        updateUser(userId);
+                    }
                     return {
                         error: true,
                         message: 'Error while updating user, this error was not your fault!'
@@ -104,7 +106,11 @@ const updateUser = async (userId, ids) => {
                         updateUser(null, groups[i]);
                     }
                 })
-                .catch((error) => {});
+                .catch((error) => {
+                    if (error.response.status == 403) {
+                        updateUser(null, groups[i]);
+                    }
+                });
         }
     }
 };

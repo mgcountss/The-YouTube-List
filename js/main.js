@@ -185,30 +185,12 @@ function isAtBottom() {
 
 window.addEventListener('scroll', () => {
     if (isAtBottom()) {
+        if (searching) return;
         offset += 5;
+        searching = true;
         getChannels();
     }
 });
-
-function sorter() {
-    document.querySelector('.channels').innerHTML = '';
-    offset = 0;
-    end = false;
-    searching = true;
-    sort1 = document.getElementById('sort1').value;
-    sort2 = document.getElementById('sort2').value;
-    getChannels();
-}
-
-function changeOrder() {
-    document.querySelector('.channels').innerHTML = '';
-    offset = 0;
-    end = false;
-    searching = true;
-    order1 = document.getElementById('order1').value;
-    order2 = document.getElementById('order2').value;
-    getChannels();
-}
 
 function addBulk() {
     document.getElementById('popup-content').style.display = 'none';

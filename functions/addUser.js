@@ -28,7 +28,6 @@ const addUser = async (userId, ids) => {
                         }
                     })
                     .catch((error) => {
-                        console.log(error);
                         return {
                             error: true,
                             message: 'Error while adding user, this error was not your fault!'
@@ -49,7 +48,7 @@ const addUser = async (userId, ids) => {
                         } else {
                             return {
                                 error: true,
-                                message: 'Error while updating user, this error was not your fault!'
+                                message: 'Error while adding user, this error was not your fault!'
                             }
                         }
                     }
@@ -92,11 +91,19 @@ const addUser = async (userId, ids) => {
                     }
                 })
                 .catch((error) => {
-                    console.error(error);
+                    if (error.response.status == 403) {
+                        addUser(userId);
+                        return {
+                            error: false,
+                            message: 'User added successfully',
+                            quota: true
+                        }
+                    } else {
                     return {
                         error: true,
                         message: 'Error while updating user, this error was not your fault!'
                     }
+                }
                 });
         }
     } else {
@@ -109,7 +116,6 @@ const addUser = async (userId, ids) => {
             try {
                 await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i]}&key=${getKey()}`)
                     .then(async (response) => {
-                        console.log(response);
                         if (response.data.error) {
                             if (response.data.error.code == 403) {
                                 addUser(null, groups[i].split(','));
@@ -155,7 +161,11 @@ const addUser = async (userId, ids) => {
                                 }
                             }
                         }
-                    }).catch((error) => { });
+                    }).catch((error) => {
+                        if (error.response.status == 403) {
+                            addUser(null, groups[i].split(','));
+                        }
+                    });
             } catch (error) {
                 console.error(error);
             }
