@@ -18,10 +18,13 @@ app.set('view engine', 'ejs');
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+let cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
+let totalCache = await db.getTotalDocuments();
 app.get('/', async (req, res) => {
-    let users = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
-    let ids = users.map(user => user.id);
-    res.render('index', { users: users, total: await db.getTotalDocuments(), ids: ids });
+    let ids = cache.map(user => user.id);
+    res.render('index', { users: cache, total: totalCache, ids: ids });
+    cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
+    totalCache = await db.getTotalDocuments();
 });
 app.get('/favicons/*', (req, res) => {
     res.sendFile(__dirname + req.path);
@@ -111,10 +114,11 @@ setInterval(() => {
     if (new Date().getHours() != lastHour) {
         lastHour = new Date().getHours();
         if (lastHour === 0 || lastHour === 12) {
-            fork('./updateAll.js');
+            fork('./updateAll.js', [process.env.MONGO_URL, process.env.MONGO_USER, process.env.MONGO_PASSWORD, process.env.YOUTUBE_API_KEYS]);
         }
     }
 }, 60000);
+fork('./updateAll.js');
 
 app.listen(3002, () => {
     console.log('Server running on port 3002');

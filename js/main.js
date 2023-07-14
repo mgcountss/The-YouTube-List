@@ -22,7 +22,8 @@ async function getChannels() {
                 } else {
                     searching = false;
                     data.forEach((channel) => {
-                        if (ids.includes(channel.user.id)) return;
+                        if (ids.includes(channel.id)) return;
+                        ids.push(channel.id);
                         let card = document.createElement('div');
                         card.classList.add('card');
                         card.innerHTML = `
@@ -186,6 +187,9 @@ function isAtBottom() {
 window.addEventListener('scroll', () => {
     if (isAtBottom()) {
         if (searching) return;
+        offset += 5;
+        searching = true;
+        getChannels();
         offset += 5;
         searching = true;
         getChannels();

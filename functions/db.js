@@ -2,11 +2,11 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
-await mongoose.connect('mongodb://' + process.env.MONGO_URL, {
+await mongoose.connect('mongodb://' + (process.env.MONGO_URL ? process.env.MONGO_URL : process.argv[2]), {
   useNewUrlParser: true,
   authSource: 'admin',
-  user: process.env.MONGO_USER,
-  pass: process.env.MONGO_PASSWORD
+  user: process.env.MONGO_USER ? process.env.MONGO_USER : process.argv[3],
+  pass: process.env.MONGO_PASSWORD ? process.env.MONGO_PASSWORD : process.argv[4]
 })
   .then(() => console.log('Connected!')).catch(err => console.log(err));
 
@@ -16,7 +16,8 @@ let userSchema = new mongoose.Schema({
   updated: Number,
   deleted: Object,
   user: Object,
-  stats: Object
+  stats: Object,
+  history: Object
 });
 
 let User = mongoose.model('users', userSchema);
@@ -125,11 +126,11 @@ const checkIds = async (ids) => {
 };
 
 const getNewestDocument = async () => {
-    try {
-        const document = await User.findOne({}, { id: 1, _id: 1 }).sort({ created: -1 });
-        if (document) return document;
-        return null;
-    } catch (error) { }
+  try {
+    const document = await User.findOne({}, { id: 1, _id: 1 }).sort({ created: -1 });
+    if (document) return document;
+    return null;
+  } catch (error) { }
 }
 
 export default {

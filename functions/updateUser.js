@@ -3,6 +3,7 @@ import axios from 'axios';
 import getKey from './getKey.js';
 
 const updateUser = async (userId, ids) => {
+    console.log('called')
     if (userId) {
         let user = await db.find('id', userId)
         if (user) {
@@ -15,6 +16,11 @@ const updateUser = async (userId, ids) => {
                                     error: true,
                                     message: 'Unable to find user'
                                 }
+                            }
+                            user.history[new Date().toString().split(' ').slice(0, 4).join(' ')] = {
+                                views: parseInt(response.data.items[0].statistics.viewCount),
+                                subscribers: parseInt(response.data.items[0].statistics.subscriberCount),
+                                videos: parseInt(response.data.items[0].statistics.videoCount)
                             }
                             user = {
                                 id: response.data.items[0].id,
@@ -33,7 +39,8 @@ const updateUser = async (userId, ids) => {
                                     views: parseInt(response.data.items[0].statistics.viewCount),
                                     subscribers: parseInt(response.data.items[0].statistics.subscriberCount),
                                     videos: parseInt(response.data.items[0].statistics.videoCount)
-                                }
+                                },
+                                history: user.history
                             }
                             db.update(userId, user);
                             return {
@@ -70,6 +77,8 @@ const updateUser = async (userId, ids) => {
             groups.push(ids.slice(i, i + 50));
         }
         for (let i = 0; i < groups.length; i++) {
+            console.log(`fetched`)
+            try {
             await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i].join(',')}&key=${getKey()}`)
                 .then(async (response) => {
                     if (!response.data.error) {
@@ -78,6 +87,12 @@ const updateUser = async (userId, ids) => {
                                 if (response.data.items[j].id) {
                                     let user = await db.find('id', response.data.items[j].id);
                                     if (user) {
+                                        if (!user.history) user.history = {}
+                                        user.history[new Date().toString().split(' ').slice(0, 4).join('_')] = {
+                                            views: parseInt(response.data.items[j].statistics.viewCount),
+                                            subscribers: parseInt(response.data.items[j].statistics.subscriberCount),
+                                            videos: parseInt(response.data.items[j].statistics.videoCount)
+                                        }
                                         user = {
                                             id: response.data.items[j].id,
                                             created: user.created,
@@ -95,22 +110,35 @@ const updateUser = async (userId, ids) => {
                                                 views: parseInt(response.data.items[j].statistics.viewCount),
                                                 subscribers: parseInt(response.data.items[j].statistics.subscriberCount),
                                                 videos: parseInt(response.data.items[j].statistics.videoCount)
-                                            }
+                                            },
+                                            history: user.history
                                         }
+                                        console.log(user);
                                         db.update(response.data.items[j].id, user);
                                     }
                                 }
                             }
+                        } else {
+                            console.log('as')
                         }
                     } else if (response.data.error.code == 403) {
+                        console.log('e')
                         updateUser(null, groups[i]);
                     }
                 })
-                .catch((error) => {
-                    if (error.response.status == 403) {
+                .catch((error, response) => {
+                    console.log(response, error)
+                    if (response.status == 403) {
                         updateUser(null, groups[i]);
                     }
                 });
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        return {
+            error: false,
+            message: 'Users updated successfully'
         }
     }
 };
