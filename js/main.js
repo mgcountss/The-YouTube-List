@@ -88,7 +88,20 @@ function search() {
     ids = [];
     channels = [];
     end = false;
+    if (localStorage.getItem('mode') == 'grid') {
     document.querySelector('.channels').innerHTML = '';
+    } else {
+        document.getElementById('table').innerHTML = `<tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Subscribers</th>
+        <th>Views</th>
+        <th>Videos</th>
+        <th>Country</th>
+        <th>Joined</th>
+        <th>Description</th>
+    </tr>`;
+    }
     sort1 = document.getElementById('sort1').value;
     sort2 = document.getElementById('sort2').value;
     order1 = document.getElementById('order1').value;
@@ -321,12 +334,16 @@ function changeMode(a) {
             document.getElementById('mode').innerHTML = 'List View';
         }
     } else {
-        if (localStorage.getItem('mode') == 'grid') {
+        if (!localStorage.getItem('mode')) {
+            localStorage.setItem('mode', 'list')
+            document.getElementById('mode').innerHTML = 'Grid View';
+            location.reload();
+        } else if (localStorage.getItem('mode') == 'grid') {
             localStorage.setItem('mode', 'list');
             document.getElementById('mode').innerHTML = 'Grid View';
             location.reload();
         } else {
-            localStorage.setItem('mode', 'list');
+            localStorage.setItem('mode', 'grid');
             document.getElementById('mode').innerHTML = 'Grid View';
             location.reload();
         }
