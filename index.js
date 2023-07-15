@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -9,14 +8,15 @@ import updateUser from './functions/updateUser.js';
 import sendChannels from './functions/sendChannels.js';
 import { fork } from 'child_process';
 import db from './functions/db.js';
-
 const app = express();
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+import bodyParser from 'body-parser';
+app.use(bodyParser({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 let cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
 let totalCache = await db.getTotalDocuments();
