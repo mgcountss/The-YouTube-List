@@ -207,7 +207,7 @@ function prevPage() {
 }
 
 function imgError(type, img) {
-    if (type === 'avatar') {
+    if (type === 'avatar' || type === 'logo') {
         img.src = '/images/avatar.png';
     } else {
         img.src = '/images/banner.png';
@@ -221,10 +221,7 @@ function isAtBottom() {
 
 window.addEventListener('scroll', () => {
     if (isAtBottom()) {
-        if (searching) return;
-        offset += 5;
-        searching = true;
-        getChannels();
+        //if (searching) return;
         offset += 5;
         searching = true;
         getChannels();
