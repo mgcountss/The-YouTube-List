@@ -14,7 +14,7 @@ app.set('view engine', 'ejs');
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import bodyParser from 'body-parser';
-app.use(bodyParser({limit: '50mb'}));
+app.use(bodyParser({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -69,14 +69,21 @@ app.post('/api/add', async (req, res) => {
     }
 });
 
-app.post('/api/update/:id', async (req, res) => {
-    if ((req.body.id.startsWith('UC')) && (req.body.id.length == 24)) {
-        res.send(await updateUser(req.body.id));
-    } else {
+app.post('/api/update', async (req, res) => {
+    if (!req.body.id) {
         res.send({
             error: true,
-            message: 'Invalid Channel ID'
+            message: 'No Parameters Provided'
         });
+    } else {
+        if ((req.body.id.startsWith('UC')) && (req.body.id.length == 24)) {
+            res.send(await updateUser(req.body.id));
+        } else {
+            res.send({
+                error: true,
+                message: 'Invalid Channel ID'
+            });
+        }
     }
 });
 

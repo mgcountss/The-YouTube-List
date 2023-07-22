@@ -3,25 +3,20 @@ import axios from 'axios';
 import getKey from './getKey.js';
 
 const updateUser = async (userId, ids) => {
-    console.log('called')
     if (userId) {
         let user = await db.find('id', userId)
         if (user) {
-            return await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`)
+            await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`)
                 .then(async (response) => {
                     if (!response.data.error) {
                         if (response.data.items) {
-                            if (response.data.items.length === 0) {
-                                return {
-                                    error: true,
-                                    message: 'Unable to find user'
-                                }
-                            }
-                            user.history[new Date().toString().split(' ').slice(0, 4).join(' ')] = {
+                            user.history[new Date().toString().split(' ').slice(0, 4).join('_')] = {
                                 views: parseInt(response.data.items[0].statistics.viewCount),
                                 subscribers: parseInt(response.data.items[0].statistics.subscriberCount),
-                                videos: parseInt(response.data.items[0].statistics.videoCount)
+                                videos: parseInt(response.data.items[0].statistics.videoCount),
+                                name: response.data.items[0].snippet.title
                             }
+                            let historyKeys = Object.keys(user.history);
                             user = {
                                 id: response.data.items[0].id,
                                 created: user.created,
@@ -38,15 +33,31 @@ const updateUser = async (userId, ids) => {
                                 stats: {
                                     views: parseInt(response.data.items[0].statistics.viewCount),
                                     subscribers: parseInt(response.data.items[0].statistics.subscriberCount),
-                                    videos: parseInt(response.data.items[0].statistics.videoCount)
+                                    videos: parseInt(response.data.items[0].statistics.videoCount),
                                 },
-                                history: user.history
+                                history: user.history,
+                                gains: {
+                                    subscribers: {
+                                        daily: historyKeys.length > 1 ? user.history[historyKeys[historyKeys.length - 1]].subscribers - user.history[historyKeys[historyKeys.length - 2]].subscribers : 0,
+                                        weekly: historyKeys.length > 7 ? user.history[historyKeys[historyKeys.length - 1]].subscribers - user.history[historyKeys[historyKeys.length - 8]].subscribers : 0,
+                                        monthly: historyKeys.length > 30 ? user.history[historyKeys[historyKeys.length - 1]].subscribers - user.history[historyKeys[historyKeys.length - 31]].subscribers : 0,
+                                        yearly: historyKeys.length > 365 ? user.history[historyKeys[historyKeys.length - 1]].subscribers - user.history[historyKeys[historyKeys.length - 366]].subscribers : 0
+                                    },
+                                    views: {
+                                        daily: historyKeys.length > 1 ? user.history[historyKeys[historyKeys.length - 1]].views - user.history[historyKeys[historyKeys.length - 2]].views : 0,
+                                        weekly: historyKeys.length > 7 ? user.history[historyKeys[historyKeys.length - 1]].views - user.history[historyKeys[historyKeys.length - 8]].views : 0,
+                                        monthly: historyKeys.length > 30 ? user.history[historyKeys[historyKeys.length - 1]].views - user.history[historyKeys[historyKeys.length - 31]].views : 0,
+                                        yearly: historyKeys.length > 365 ? user.history[historyKeys[historyKeys.length - 1]].views - user.history[historyKeys[historyKeys.length - 366]].views : 0
+                                    },
+                                    videos: {
+                                        daily: historyKeys.length > 1 ? user.history[historyKeys[historyKeys.length - 1]].videos - user.history[historyKeys[historyKeys.length - 2]].videos : 0,
+                                        weekly: historyKeys.length > 7 ? user.history[historyKeys[historyKeys.length - 1]].videos - user.history[historyKeys[historyKeys.length - 8]].videos : 0,
+                                        monthly: historyKeys.length > 30 ? user.history[historyKeys[historyKeys.length - 1]].videos - user.history[historyKeys[historyKeys.length - 31]].videos : 0,
+                                        yearly: historyKeys.length > 365 ? user.history[historyKeys[historyKeys.length - 1]].videos - user.history[historyKeys[historyKeys.length - 366]].videos : 0
+                                    }
+                                }
                             }
                             db.update(userId, user);
-                            return {
-                                error: false,
-                                message: 'User updated successfully'
-                            }
                         }
                     } else if (response.data.error.code == 403) {
                         updateUser(userId);
@@ -61,11 +72,11 @@ const updateUser = async (userId, ids) => {
                     if (error.response.status == 403) {
                         updateUser(userId);
                     }
-                    return {
-                        error: true,
-                        message: 'Error while updating user, this error was not your fault!'
-                    }
                 });
+            return {
+                error: false,
+                message: 'Updating user'
+            }
         }
         return {
             error: true,
@@ -79,59 +90,79 @@ const updateUser = async (userId, ids) => {
         for (let i = 0; i < groups.length; i++) {
             console.log(`fetched`)
             try {
-            await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i].join(',')}&key=${getKey()}`)
-                .then(async (response) => {
-                    if (!response.data.error) {
-                        if (response.data.items) {
-                            for (let j = 0; j < response.data.items.length; j++) {
-                                if (response.data.items[j].id) {
-                                    let user = await db.find('id', response.data.items[j].id);
-                                    if (user) {
-                                        if (!user.history) user.history = {}
-                                        user.history[new Date().toString().split(' ').slice(0, 4).join('_')] = {
-                                            views: parseInt(response.data.items[j].statistics.viewCount),
-                                            subscribers: parseInt(response.data.items[j].statistics.subscriberCount),
-                                            videos: parseInt(response.data.items[j].statistics.videoCount)
-                                        }
-                                        user = {
-                                            id: response.data.items[j].id,
-                                            created: user.created,
-                                            updated: Date.now(),
-                                            deleted: user.deleted,
-                                            user: {
-                                                name: response.data.items[j].snippet.title,
-                                                logo: response.data.items[j].snippet.thumbnails.default.url,
-                                                banner: response.data.items[j].brandingSettings.image ? response.data.items[j].brandingSettings.image.bannerExternalUrl : response.data.items[j].snippet.thumbnails.default.url,
-                                                country: response.data.items[j].brandingSettings.channel.country,
-                                                joined: response.data.items[j].snippet.publishedAt,
-                                                description: response.data.items[j].snippet.description
-                                            },
-                                            stats: {
+                await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i].join(',')}&key=${getKey()}`)
+                    .then(async (response) => {
+                        if (!response.data.error) {
+                            if (response.data.items) {
+                                for (let j = 0; j < response.data.items.length; j++) {
+                                    if (response.data.items[j].id) {
+                                        let user = await db.find('id', response.data.items[j].id);
+                                        if (user) {
+                                            if (!user.history) user.history = {}
+                                            user.history[new Date().toString().split(' ').slice(0, 4).join('_')] = {
                                                 views: parseInt(response.data.items[j].statistics.viewCount),
                                                 subscribers: parseInt(response.data.items[j].statistics.subscriberCount),
-                                                videos: parseInt(response.data.items[j].statistics.videoCount)
-                                            },
-                                            history: user.history
+                                                videos: parseInt(response.data.items[j].statistics.videoCount),
+                                                name: response.data.items[j].snippet.title
+                                            }
+                                            let historyKeys = Object.keys(user.history);
+                                            user = {
+                                                id: response.data.items[j].id,
+                                                created: user.created,
+                                                updated: Date.now(),
+                                                deleted: user.deleted,
+                                                user: {
+                                                    name: response.data.items[j].snippet.title,
+                                                    logo: response.data.items[j].snippet.thumbnails.default.url,
+                                                    banner: response.data.items[j].brandingSettings.image ? response.data.items[j].brandingSettings.image.bannerExternalUrl : response.data.items[j].snippet.thumbnails.default.url,
+                                                    country: response.data.items[j].brandingSettings.channel.country,
+                                                    joined: response.data.items[j].snippet.publishedAt,
+                                                    description: response.data.items[j].snippet.description
+                                                },
+                                                stats: {
+                                                    views: parseInt(response.data.items[j].statistics.viewCount),
+                                                    subscribers: parseInt(response.data.items[j].statistics.subscriberCount),
+                                                    videos: parseInt(response.data.items[j].statistics.videoCount)
+                                                },
+                                                history: user.history,
+                                                gains: {
+                                                    subscribers: {
+                                                        daily: historyKeys.length > 1 ? user.history[historyKeys[historyKeys.length - 1]].subscribers - user.history[historyKeys[historyKeys.length - 2]].subscribers : 0,
+                                                        weekly: historyKeys.length > 7 ? user.history[historyKeys[historyKeys.length - 1]].subscribers - user.history[historyKeys[historyKeys.length - 8]].subscribers : 0,
+                                                        monthly: historyKeys.length > 30 ? user.history[historyKeys[historyKeys.length - 1]].subscribers - user.history[historyKeys[historyKeys.length - 31]].subscribers : 0,
+                                                        yearly: historyKeys.length > 365 ? user.history[historyKeys[historyKeys.length - 1]].subscribers - user.history[historyKeys[historyKeys.length - 366]].subscribers : 0
+                                                    },
+                                                    views: {
+                                                        daily: historyKeys.length > 1 ? user.history[historyKeys[historyKeys.length - 1]].views - user.history[historyKeys[historyKeys.length - 2]].views : 0,
+                                                        weekly: historyKeys.length > 7 ? user.history[historyKeys[historyKeys.length - 1]].views - user.history[historyKeys[historyKeys.length - 8]].views : 0,
+                                                        monthly: historyKeys.length > 30 ? user.history[historyKeys[historyKeys.length - 1]].views - user.history[historyKeys[historyKeys.length - 31]].views : 0,
+                                                        yearly: historyKeys.length > 365 ? user.history[historyKeys[historyKeys.length - 1]].views - user.history[historyKeys[historyKeys.length - 366]].views : 0
+                                                    },
+                                                    videos: {
+                                                        daily: historyKeys.length > 1 ? user.history[historyKeys[historyKeys.length - 1]].videos - user.history[historyKeys[historyKeys.length - 2]].videos : 0,
+                                                        weekly: historyKeys.length > 7 ? user.history[historyKeys[historyKeys.length - 1]].videos - user.history[historyKeys[historyKeys.length - 8]].videos : 0,
+                                                        monthly: historyKeys.length > 30 ? user.history[historyKeys[historyKeys.length - 1]].videos - user.history[historyKeys[historyKeys.length - 31]].videos : 0,
+                                                        yearly: historyKeys.length > 365 ? user.history[historyKeys[historyKeys.length - 1]].videos - user.history[historyKeys[historyKeys.length - 366]].videos : 0
+                                                    }
+                                                }
+                                            }
+                                            db.update(response.data.items[j].id, user);
                                         }
-                                        console.log(user);
-                                        db.update(response.data.items[j].id, user);
                                     }
                                 }
+                            } else {
+                                console.log('as')
                             }
-                        } else {
-                            console.log('as')
+                        } else if (response.data.error.code == 403) {
+                            console.log('e')
+                            updateUser(null, groups[i]);
                         }
-                    } else if (response.data.error.code == 403) {
-                        console.log('e')
-                        updateUser(null, groups[i]);
-                    }
-                })
-                .catch((error, response) => {
-                    console.log(response, error)
-                    if (response.status == 403) {
-                        updateUser(null, groups[i]);
-                    }
-                });
+                    })
+                    .catch((error) => {
+                        if (error.response.status == 403) {
+                            updateUser(null, groups[i]);
+                        }
+                    });
             } catch (error) {
                 console.log(error)
             }

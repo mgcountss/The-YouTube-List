@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>The YouTube List</title>
-    <link href="css/style.css?update=8a679042-e1ae-4bf6-8ee4-e5541f50a4c0" rel="stylesheet" id="themeLink"/>
+    <link href="css/style.css?update=7a679042-e1ae-4bf6-8ee4-e5541f50a4c0" rel="stylesheet" id="themeLink" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
@@ -79,6 +79,9 @@
             <option value="joined">Joined</option>
             <option value="name">Name</option>
             <option value="country">Country</option>
+            <option value="subscribers24">24 Hour Gain (Subscribers)</option>
+            <option value="views24">24 Hour Gain (Views)</option>
+            <option value="videos24">24 Hour Gain (Videos)</option>
         </select>
         <select id="order1" autocomplete="off">
             <option value="desc">Descending</option>
@@ -92,6 +95,9 @@
             <option value="joined">Joined</option>
             <option value="name">Name</option>
             <option value="country">Country</option>
+            <option value="subscribers24">24 Hour Gain (Subscribers)</option>
+            <option value="views24">24 Hour Gain (Views)</option>
+            <option value="videos24">24 Hour Gain (Videos)</option>
         </select>
         <select id="order2" autocomplete="off">
             <option value="desc">Descending</option>
@@ -104,7 +110,7 @@
     <center>
         <div class="channels" id="channels">
             <% users.forEach((channel, q)=> { %>
-                <div class="card">
+                <div class="card" onclick="openMenu('<%=channel.id%>')">
                     <div class="banner" style="background-image: url('<%=channel.user.banner%>')">
                         <img src="<%=channel.user.logo%>" class="logo" alt="<%=channel.user.name%> logo"
                             onerror="imgError('avatar', this)">
@@ -145,12 +151,19 @@
                                 </h4>
                                 <h5>Joined</h5>
                             </div>
+                            <div>
+                                <h4 class="gain24">
+                                    <%=channel.gains.subscribers.daily.toLocaleString()%>
+                                </h4>
+                                <h5>24 Hour Gain</h5>
+                            </div>
                         </div>
                     </div>
                     <hr>
                     <textarea class="description"><%=channel.user.description%></textarea>
                 </div>
                 <% }) %>
+            <button class="loadMore" onclick="getChannels2()" id="loadMore">Load More</button>
         </div>
     </center>
     <div id="popup" class="popup">
@@ -187,9 +200,25 @@
                 <button class="close" onclick="closePopup2()">Exit Tab</button><br>
                 <button id="theme" onclick="changeTheme()" style="float: left;">Dark Mode</button>
                 <div style="float: right;">
-                <button id="mode" onclick="changeMode()">List Mode</button><br>
-                <label>This will reload the page</label>
+                    <button id="mode" onclick="changeMode()">List Mode</button><br>
+                    <label>This will reload the page</label>
                 </div>
+            </center>
+        </div>
+    </div>
+    <div id="menu" class="menu">
+        <div class="menu2">
+            <center>
+                <button id="update" onclick="updateUser()">Update User</button>
+                <br>
+                <br>
+                <hr>
+                <br>
+                <h4>Channel ID:</h4>
+                <h3 id="id"></h3>
+                <hr>
+                <h3 id="visit" style="cursor: pointer; background-color: #161616;">Visit Channel</h3>
+                <button style="font-size: 2vw;" onclick="closePopup3()">Exit Tab</button><br>
             </center>
         </div>
     </div>
@@ -197,8 +226,8 @@
         <div class="loading"></div>
     </div>
     <%- include('imports.ejs') %>
-    <script src="js/fix.js"></script>
-    <script src="js/main.js?update=8a679042-e1ae-4bf6-8ee4-e5541f50a4c3"></script>
+        <script src="js/fix.js"></script>
+        <script src="js/main.js?update=7a679042-e1ae-4bf6-8ee4-e5541f50a4c3"></script>
 </body>
 
 </html>

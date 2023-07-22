@@ -132,6 +132,7 @@ const addUser = async (userId, ids) => {
                                 if (await db.find('id', response.data.items[i].id)) {
                                     updateUser(response.data.items[i].id);
                                 } else {
+                                    let dateString = new Date().toString().split(' ').slice(0, 4).join(' ');
                                     db.add({
                                         id: response.data.items[i].id,
                                         created: Date.now(),
@@ -156,6 +157,14 @@ const addUser = async (userId, ids) => {
                                             views: parseInt(response.data.items[i].statistics.viewCount),
                                             subscribers: parseInt(response.data.items[i].statistics.subscriberCount),
                                             videos: parseInt(response.data.items[i].statistics.videoCount)
+                                        },
+                                        history: {
+                                            [dateString]: {
+                                                views: parseInt(response.data.items[i].statistics.viewCount),
+                                                subscribers: parseInt(response.data.items[i].statistics.subscriberCount),
+                                                videos: parseInt(response.data.items[i].statistics.videoCount),
+                                                name: response.data.items[i].snippet.title
+                                            }
                                         }
                                     });
                                 }

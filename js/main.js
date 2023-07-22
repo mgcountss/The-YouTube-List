@@ -26,8 +26,7 @@ async function getChannels() {
                             if (ids.includes(channel.id)) return;
                             ids.push(channel.id);
                             channels.push(channel);
-                            let row = document.createElement('tr');
-                            row.innerHTML = `
+                            document.getElementById('table').innerHTML += `<tr onclick="openMenu('${channel.id}')">
                     <td><img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)"></td>
                     <td><h3 class="name">${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3></td>
                     <td><h4 class="subscribers">${channel.stats.subscribers.toLocaleString()}</h4></td>
@@ -35,8 +34,8 @@ async function getChannels() {
                     <td><h4 class="videos">${channel.stats.videos.toLocaleString()}</h4></td>
                     <td><h4 class="country">${channel.user.country}</h4></td>
                     <td><h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4></td>
-                    <td><textarea class="description">${channel.user.description}</textarea></td>`;
-                            document.getElementById('table').appendChild(row);
+                    <td><h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString()}</h4></td></tr>`
+                            //`<td><textarea class="description">${channel.user.description}</textarea></td>`;
                         })
                     } else {
                         data.forEach((channel) => {
@@ -45,7 +44,8 @@ async function getChannels() {
                             channels.push(channel)
                             let card = document.createElement('div');
                             card.classList.add('card');
-                            card.innerHTML = `
+                            card.onclick = "openMenu('" + channel.id + "')";
+                            document.querySelector('.channels').innerHTML += `<div class="card" onclick="openMenu('${channel.id}')">
                     <div class="banner" style="background-image: url('${channel.user.banner}')">
                         <img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)">
                     </div>
@@ -72,12 +72,20 @@ async function getChannels() {
                                 <h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4>
                                 <h5>Joined</h5>
                             </div>
+                            <div>
+                                <h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString()}</h4>
+                                <h5>Gain in 24 hours</h5>
+                            </div>
                         </div>
                     </div><hr>
-                    <textarea class="description">${channel.user.description}</textarea>`;
-                            document.querySelector('.channels').appendChild(card);
+                    <textarea class="description">${channel.user.description}</textarea>
+                    </div>`;
                         });
                     }
+                    if (document.getElementById('loadMore')) {
+                        document.getElementById('loadMore').remove();
+                    }
+                    document.querySelector('.channels').innerHTML += "<button class='loadMore' id='loadMore' onclick='getChannels2()'>Load More</button>"
                 }
             }
         }).catch(err => console.error(err));
@@ -89,7 +97,7 @@ function search() {
     channels = [];
     end = false;
     if (localStorage.getItem('mode') == 'grid') {
-    document.querySelector('.channels').innerHTML = '';
+        document.querySelector('.channels').innerHTML = '';
     } else {
         document.getElementById('table').innerHTML = `<tr>
         <th>Logo</th>
@@ -99,7 +107,7 @@ function search() {
         <th>Videos</th>
         <th>Country</th>
         <th>Joined</th>
-        <th>Description</th>
+        <th>24H Gain</th>
     </tr>`;
     }
     sort1 = document.getElementById('sort1').value;
@@ -221,12 +229,17 @@ function isAtBottom() {
 
 window.addEventListener('scroll', () => {
     if (isAtBottom()) {
-        //if (searching) return;
         offset += 5;
         searching = true;
         getChannels();
     }
 });
+
+function getChannels2() {
+    offset += 5;
+    searching = true;
+    getChannels();
+}
 
 function addBulk() {
     document.getElementById('popup-content').style.display = 'none';
@@ -287,6 +300,10 @@ function closePopup2() {
     document.getElementById('settings').style.display = 'none';
 }
 
+function closePopup3() {
+    document.getElementById('menu').style.display = 'none';
+}
+
 function changeTheme(a) {
     if (a) {
         if (localStorage.getItem('theme') == 'dark') {
@@ -323,7 +340,7 @@ function changeMode(a) {
                 <th>Videos</th>
                 <th>Country</th>
                 <th>Joined</th>
-                <th>Description</th>
+                <th>24H Gain</th>
             </tr>
             </table>`
             getChannels();
@@ -346,5 +363,35 @@ function changeMode(a) {
         }
     }
 }
+
+let currentID = '';
+function openMenu(id) {
+    currentID = id;
+    document.getElementById('menu').style.display = 'flex';
+    let channel = channels.find(channel => channel.id == id);
+    document.getElementById('id').innerHTML = channel.id;
+    document.getElementById('visit').onclick = () => {
+        window.open(`https://youtube.com/channel/${channel.id}`);
+    }
+}
+
+function updateUser() {
+    if (currentID == '') return;
+    fetch('/api/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: currentID })
+    }).then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.message);
+            } else {
+                alert('Updating channel...');
+            }
+        }).catch(err => console.error(err));
+}
+
 changeTheme('init')
 changeMode('init')
