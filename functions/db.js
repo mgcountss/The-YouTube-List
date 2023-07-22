@@ -77,8 +77,6 @@ removeDuplicates()
 
 const getall2 = async (options) => {
   try {
-    let sort1 = options.sort1 === "views" || options.sort1 === "subscribers" || options.sort1 === "videos" ? `stats.${options.sort1}` : `user.${options.sort1}`;
-    let sort2 = options.sort2 === "views" || options.sort2 === "subscribers" || options.sort2 === "videos" ? `stats.${options.sort2}` : `user.${options.sort2}`;
     if (options.sort1 === "subscribers24") {
       options.sort1 = "gains.subscribers.daily";
     } else if (options.sort1 === "subscribers7") {
@@ -97,6 +95,8 @@ const getall2 = async (options) => {
       options.sort1 = "gains.videos.weekly";
     } else if (options.sort1 === "videos30") {
       options.sort1 = "gains.videos.monthly";
+    } else {
+      options.sort1 = options.sort1 === "views" || options.sort1 === "subscribers" || options.sort1 === "videos" ? `stats.${options.sort1}` : `user.${options.sort1}`;
     }
     if (options.sort2 === "subscribers24") {
       options.sort2 = "gains.subscribers.daily";
@@ -116,6 +116,8 @@ const getall2 = async (options) => {
       options.sort2 = "gains.videos.weekly";
     } else if (options.sort2 === "videos30") {
       options.sort2 = "gains.videos.monthly";
+    } else {
+      options.sort2 = options.sort2 === "views" || options.sort2 === "subscribers" || options.sort2 === "videos" ? `stats.${options.sort2}` : `user.${options.sort2}`;
     }
     let documents = await User.find({
       $or: [
@@ -128,8 +130,8 @@ const getall2 = async (options) => {
       ],
     })
       .sort({
-        [sort1]: options.order1 === "asc" ? 1 : -1,
-        [sort2]: options.order2 === "asc" ? 1 : -1,
+        [options.sort1]: options.order1 === "asc" ? 1 : -1,
+        [options.sort2]: options.order2 === "asc" ? 1 : -1,
       }).limit(options.limit).skip(options.offset);
     documents = JSON.parse(JSON.stringify(documents));
     documents = documents.map((document) => {
