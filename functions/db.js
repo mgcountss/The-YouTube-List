@@ -162,12 +162,12 @@ const find2 = async (json) => {
 
 const getTotalDocuments = async () => {
   try {
-    const count = await User.countDocuments();
+    const totalChannels = await User.countDocuments();
     const totalSubscribers = await User.aggregate([{ $group: { _id: null, total: { $sum: "$stats.subscribers" } } }]);
     const totalViews = await User.aggregate([{ $group: { _id: null, total: { $sum: "$stats.views" } } }]);
     const totalVideos = await User.aggregate([{ $group: { _id: null, total: { $sum: "$stats.videos" } } }]);
     return {
-      count: count,
+      totalChannels: totalChannels,
       totalSubscribers: totalSubscribers[0].total,
       totalViews: totalViews[0].total,
       totalVideos: totalVideos[0].total

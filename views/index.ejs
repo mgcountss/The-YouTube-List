@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>The YouTube List</title>
     <link href="css/style.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c0" rel="stylesheet" id="themeLink" />
+    <link href="css/odometer.css" rel="stylesheet" />
+    <script src="js/odometer.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
@@ -44,25 +46,25 @@
         <div class="grid4">
             <div>
                 <h4>Total Channels</h4>
-                <h5 class="stat">
-                    <%= total.count.toLocaleString() %>
+                <h5 class="stat odometer" id="totalChannels">
+                    <%= total.totalChannels %>
                 </h5>
             </div>
             <div>
                 <h4>Total Subscribers</h4>
-                <h5 class="stat">
-                    <%= total.totalSubscribers.toLocaleString() %>
+                <h5 class="stat odometer" id="totalSubscribers">
+                    <%= total.totalSubscribers %>
                 </h5>
             </div>
             <div>
                 <h4>Total Views</h4>
-                <h5 class="stat">
-                    <%= total.totalViews.toLocaleString() %>
+                <h5 class="stat odometer" id="totalViews">
+                    <%= total.totalViews %>
                 </h5>
             </div>
             <div>
                 <h4>Total Videos</h4>
-                <h5 class="stat">
+                <h5 class="stat odometer" id="totalVideos">
                     <%= total.totalVideos.toLocaleString() %>
                 </h5>
             </div>

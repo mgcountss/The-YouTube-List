@@ -409,3 +409,18 @@ function updateUser() {
 
 changeTheme('init')
 changeMode('init')
+
+setInterval(() => {
+    fetch('/api/totals', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+        .then(data => {
+            document.getElementById('totalChannels').innerHTML = data.totalChannels
+            document.getElementById('totalSubscribers').innerHTML = data.totalSubscribers
+            document.getElementById('totalViews').innerHTML = data.totalViews
+            document.getElementById('totalVideos').innerHTML = data.totalVideos
+        }).catch(err => console.error(err));
+},5000)

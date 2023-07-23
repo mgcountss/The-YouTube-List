@@ -24,6 +24,10 @@ app.get('/', async (req, res) => {
     let ids = cache.map(user => user.id);
     res.render('index', { users: cache, total: totalCache, ids: ids });
     cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
+});
+
+app.post('/api/totals', async (req, res) => {
+    res.send(totalCache);
     totalCache = await db.getTotalDocuments();
 });
 /*let cache3 = []
