@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>The YouTube List</title>
-    <link href="css/style.css?update=7a679042-e1ae-4bf6-8ee4-e5541f50a4c0" rel="stylesheet" id="themeLink" />
+    <link href="css/style.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c0" rel="stylesheet" id="themeLink" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
@@ -155,7 +155,19 @@
                                 <h4 class="gain24">
                                     <%=channel.gains.subscribers.daily.toLocaleString()%>
                                 </h4>
-                                <h5>24 Hour Gain</h5>
+                                <h5>Subscribers (24 Hours)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain24">
+                                    <%=channel.gains.views.daily.toLocaleString()%>
+                                </h4>
+                                <h5>Views (24 Hours)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain24">
+                                    <%=channel.gains.videos.daily.toLocaleString()%>
+                                </h4>
+                                <h5>Videos (24 Hours)</h5>
                             </div>
                         </div>
                     </div>
@@ -163,7 +175,7 @@
                     <textarea class="description"><%=channel.user.description%></textarea>
                 </div>
                 <% }) %>
-            <button class="loadMore" onclick="getChannels2()" id="loadMore">Load More</button>
+                    <button class="loadMore" onclick="getChannels2()" id="loadMore">Load More</button>
         </div>
     </center>
     <div id="popup" class="popup">
@@ -227,7 +239,7 @@
     </div>
     <%- include('imports.ejs') %>
         <script src="js/fix.js"></script>
-        <script src="js/main.js?update=7a679042-e1ae-4bf6-8ee4-e5541f50a4c3"></script>
+        <script src="js/main.js?update=a7a675042-e1ae-4bf6-8ee4-e5541f50a4c3"></script>
 </body>
 
 </html>

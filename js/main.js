@@ -34,7 +34,9 @@ async function getChannels() {
                     <td><h4 class="videos">${channel.stats.videos.toLocaleString()}</h4></td>
                     <td><h4 class="country">${channel.user.country}</h4></td>
                     <td><h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4></td>
-                    <td><h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString()}</h4></td></tr>`
+                    <td><h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString()}</h4></td>
+                    <td><h4 class="gain24">${channel.gains.views.daily.toLocaleString()}</h4></td>
+                    <td><h4 class="gain24">${channel.gains.videos.daily.toLocaleString()}</h4></td></tr>`
                             //`<td><textarea class="description">${channel.user.description}</textarea></td>`;
                         })
                     } else {
@@ -74,7 +76,15 @@ async function getChannels() {
                             </div>
                             <div>
                                 <h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString()}</h4>
-                                <h5>Gain in 24 hours</h5>
+                                <h5>Subscribers (24H Gain)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain24">${channel.gains.views.daily.toLocaleString()}</h4>
+                                <h5>Views (24H Gain)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain24">${channel.gains.videos.daily.toLocaleString()}</h4>
+                                <h5>Videos (24H Gain)</h5>
                             </div>
                         </div>
                     </div><hr>
@@ -107,7 +117,9 @@ function search() {
         <th>Videos</th>
         <th>Country</th>
         <th>Joined</th>
-        <th>24H Gain</th>
+        <th>Subscribers (24H Gain)</th>
+        <th>Views (24H Gain)</th>
+        <th>Videos (24H Gain)</th>
     </tr>`;
     }
     sort1 = document.getElementById('sort1').value;
@@ -307,17 +319,17 @@ function closePopup3() {
 function changeTheme(a) {
     if (a) {
         if (localStorage.getItem('theme') == 'dark') {
-            document.getElementById('themeLink').href = '/css/dark.css';
+            document.getElementById('themeLink').href = '/css/dark.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c0';
             document.getElementById('theme').innerHTML = 'Light Mode';
         }
     } else {
         if (localStorage.getItem('theme') == 'dark') {
             localStorage.setItem('theme', 'light');
-            document.getElementById('themeLink').href = '/css/style.css';
+            document.getElementById('themeLink').href = '/css/style.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c0';
             document.getElementById('theme').innerHTML = 'Dark Mode';
         } else {
             localStorage.setItem('theme', 'dark');
-            document.getElementById('themeLink').href = '/css/dark.css';
+            document.getElementById('themeLink').href = '/css/dark.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c0';
             document.getElementById('theme').innerHTML = 'Light Mode';
         }
     }
@@ -340,7 +352,9 @@ function changeMode(a) {
                 <th>Videos</th>
                 <th>Country</th>
                 <th>Joined</th>
-                <th>24H Gain</th>
+                <th>Subscribers (24H Gain)</th>
+                <th>Views (24H Gain)</th>
+                <th>Videos (24H Gain)</th>
             </tr>
             </table>`
             getChannels();
