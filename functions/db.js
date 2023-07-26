@@ -75,63 +75,39 @@ const removeDuplicates = async () => {
 
 removeDuplicates()
 
+const sortMap = {
+  subscribers24: "gains.subscribers.daily",
+  subscribers7: "gains.subscribers.weekly",
+  subscribers30: "gains.subscribers.monthly",
+  views24: "gains.views.daily",
+  views7: "gains.views.weekly",
+  views30: "gains.views.monthly",
+  videos24: "gains.videos.daily",
+  videos7: "gains.videos.weekly",
+  videos30: "gains.videos.monthly",
+  nameLength: "nameLength",
+  descriptionLength: "descriptionLength",
+};
+
+const getMappedSort = (sortOption) => {
+  return sortMap[sortOption] || (sortOption === "views" || sortOption === "subscribers" || sortOption === "videos" ? `stats.${sortOption}` : `user.${sortOption}`);
+};
+
 const getall2 = async (options) => {
   try {
-    if (options.sort1 === "subscribers24") {
-      options.sort1 = "gains.subscribers.daily";
-    } else if (options.sort1 === "subscribers7") {
-      options.sort1 = "gains.subscribers.weekly";
-    } else if (options.sort1 === "subscribers30") {
-      options.sort1 = "gains.subscribers.monthly";
-    } else if (options.sort1 === "views24") {
-      options.sort1 = "gains.views.daily";
-    } else if (options.sort1 === "views7") {
-      options.sort1 = "gains.views.weekly";
-    } else if (options.sort1 === "views30") {
-      options.sort1 = "gains.views.monthly";
-    } else if (options.sort1 === "videos24") {
-      options.sort1 = "gains.videos.daily";
-    } else if (options.sort1 === "videos7") {
-      options.sort1 = "gains.videos.weekly";
-    } else if (options.sort1 === "videos30") {
-      options.sort1 = "gains.videos.monthly";
-    } else {
-      options.sort1 = options.sort1 === "views" || options.sort1 === "subscribers" || options.sort1 === "videos" ? `stats.${options.sort1}` : `user.${options.sort1}`;
-    }
-    if (options.sort2 === "subscribers24") {
-      options.sort2 = "gains.subscribers.daily";
-    } else if (options.sort2 === "subscribers7") {
-      options.sort2 = "gains.subscribers.weekly";
-    } else if (options.sort2 === "subscribers30") {
-      options.sort2 = "gains.subscribers.monthly";
-    } else if (options.sort2 === "views24") {
-      options.sort2 = "gains.views.daily";
-    } else if (options.sort2 === "views7") {
-      options.sort2 = "gains.views.weekly";
-    } else if (options.sort2 === "views30") {
-      options.sort2 = "gains.views.monthly";
-    } else if (options.sort2 === "videos24") {
-      options.sort2 = "gains.videos.daily";
-    } else if (options.sort2 === "videos7") {
-      options.sort2 = "gains.videos.weekly";
-    } else if (options.sort2 === "videos30") {
-      options.sort2 = "gains.videos.monthly";
-    } else {
-      options.sort2 = options.sort2 === "views" || options.sort2 === "subscribers" || options.sort2 === "videos" ? `stats.${options.sort2}` : `user.${options.sort2}`;
-    }
+    options.sort1 = getMappedSort(options.sort1);
+    options.sort2 = getMappedSort(options.sort2);
     let documents = await User.find({
       $or: [
         { "user.name": { $regex: options.search, $options: "i" } },
         { "id": { $regex: options.search, $options: "i" } },
-        { "user.description": { $regex: options.search, $options: "i" } },
-        { "user.name": { $regex: options.search, $options: "i" } },
-        { "id": { $regex: options.search, $options: "i" } },
         { "user.description": { $regex: options.search, $options: "i" } }
       ],
+      ...options.filters
     })
       .sort({
         [options.sort1]: options.order1 === "asc" ? 1 : -1,
-        [options.sort2]: options.order2 === "asc" ? 1 : -1,
+        [options.sort2]: options.order2 === "asc" ? 1 : -1
       }).limit(options.limit).skip(options.offset);
     documents = JSON.parse(JSON.stringify(documents));
     documents = documents.map((document) => {

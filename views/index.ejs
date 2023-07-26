@@ -84,6 +84,8 @@
             <option value="subscribers24">24 Hour Gain (Subscribers)</option>
             <option value="views24">24 Hour Gain (Views)</option>
             <option value="videos24">24 Hour Gain (Videos)</option>
+            <option value="name">Name</option>
+            <option value="description">Description</option>
         </select>
         <select id="order1" autocomplete="off">
             <option value="desc">Descending</option>
@@ -100,11 +102,15 @@
             <option value="subscribers24">24 Hour Gain (Subscribers)</option>
             <option value="views24">24 Hour Gain (Views)</option>
             <option value="videos24">24 Hour Gain (Videos)</option>
+            <option value="name">Name</option>
+            <option value="description">Description</option>
         </select>
         <select id="order2" autocomplete="off">
             <option value="desc">Descending</option>
             <option value="asc">Ascending</option>
         </select>
+        <div class="filters"></div>
+        <button onclick="addFilter()" class="addFilter">Add Filter</button>
         <button onclick="search()" class="search">Search</button>
         <button style="float: right;" onclick="settings()">Settings</button>
     </div>

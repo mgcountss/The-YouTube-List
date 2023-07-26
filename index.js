@@ -94,12 +94,6 @@ app.post('/api/update', async (req, res) => {
 app.post('/api/channels', async (req, res) => {
     let sort1 = req.body.sort1 ? req.body.sort1 : 'subscribers';
     let sort2 = req.body.sort2 ? req.body.sort2 : 'name';
-    if (sort1 == "") {
-        sort1 = 'subscribers';
-    }
-    if (sort2 == "") {
-        sort2 = 'name';
-    }
     let options = {
         sort1: sort1,
         sort2: sort2,
@@ -107,7 +101,8 @@ app.post('/api/channels', async (req, res) => {
         order2: req.body.order2 ? req.body.order2 : 'desc',
         limit: 5,
         offset: req.body.offset ? req.body.offset : 0,
-        search: req.body.search ? req.body.search : ''
+        search: req.body.search ? req.body.search : '',
+        filters: req.body.filters ? req.body.filters : {}
     }
     res.send(await sendChannels(options));
 })

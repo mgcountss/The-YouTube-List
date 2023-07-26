@@ -5,13 +5,14 @@ let sort1 = 'subscribers';
 let sort2 = 'subscribers';
 let order1 = 'desc';
 let order2 = 'desc';
+let filters = {};
 async function getChannels() {
     fetch('/api/channels', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ offset: offset, sort1: sort1, sort2: sort2, search: document.getElementById('search').value, order1: order1, order2: order2 })
+        body: JSON.stringify({ offset: offset, sort1: sort1, sort2: sort2, search: document.getElementById('search').value, order1: order1, order2: order2, filters: filters })
     })
         .then(res => res.json())
         .then(data => {
@@ -106,9 +107,7 @@ function search() {
     ids = [];
     channels = [];
     end = false;
-    if (localStorage.getItem('mode') == 'grid') {
-        document.querySelector('.channels').innerHTML = '';
-    } else {
+    if (localStorage.getItem('mode') == 'list') {
         document.getElementById('table').innerHTML = `<tr>
         <th>Logo</th>
         <th>Name</th>
@@ -121,11 +120,43 @@ function search() {
         <th>Views (24H Gain)</th>
         <th>Videos (24H Gain)</th>
     </tr>`;
+    } else {
+        document.querySelector('.channels').innerHTML = '';
     }
     sort1 = document.getElementById('sort1').value;
     sort2 = document.getElementById('sort2').value;
     order1 = document.getElementById('order1').value;
     order2 = document.getElementById('order2').value;
+    filters = {};
+    let filter = document.querySelectorAll('.filter');
+    for (let q = 0; q < filter.length; q++) {
+        let type = filter[q].querySelector('.filterType').value;
+        let operator = filter[q].querySelector('.filterOperator').value;
+        let value = filter[q].querySelector('.filterValue').value;
+        if (type == 'subscribers' || type == 'views' || type == 'videos' || type == 'subscribers24' || type == 'views24' || type == 'videos24') {
+            value = parseInt(value);
+            type = 'stats.' + type;
+        } else if (type == 'joined' || type == 'country') {
+            type = 'user.' + type;
+        } else {
+            type = 'gains.' + type;
+        }
+        if (type == 'stats.subscribers' || type == 'stats.views' || type == 'stats.videos' || type == 'gains.subscribers24' || type == 'gains.views24' || type == 'gains.videos24' || type == 'user.joined' || type == 'user.country') {
+            if (operator == '=') {
+                filters[type] = value;
+            } else if (operator == '>') {
+                filters[type] = { $gt: value };
+            } else if (operator == '<') {
+                filters[type] = { $lt: value };
+            } else if (operator == '>=') {
+                filters[type] = { $gte: value };
+            } else if (operator == '<=') {
+                filters[type] = { $lte: value };
+            }
+        } else if (type == 'country') {
+            filters[type] = value;
+        }
+    }     
     document.getElementById('loader').style.display = "block";
     searching = true;
     getChannels();
@@ -407,8 +438,34 @@ function updateUser() {
         }).catch(err => console.error(err));
 }
 
-changeTheme('init')
-changeMode('init')
+function addFilter() {
+    let filter = document.createElement('div');
+    filter.classList.add('filter');
+    filter.innerHTML = `<select class="filterType" onchange="changeFilter(this)">
+    <option value="subscribers">Subscribers</option>
+    <option value="views">Views</option>
+    <option value="videos">Videos</option>
+    <option value="country">Country</option>
+    <option value="joined">Joined (year, month, day)</option>
+    <option value="subscribers24">Subscribers (24H Gain)</option>
+    <option value="views24">Views (24H Gain)</option>
+    <option value="videos24">Videos (24H Gain)</option>
+</select>
+<select class="filterOperator">
+    <option value="=">=</option>
+    <option value=">">></option>
+    <option value="<"><</option>
+    <option value=">=">>=</option>
+    <option value="<="><=</option>
+</select>
+<input type="text" class="filterValue" placeholder="Value">
+<button class="removeFilter" onclick="removeFilter(this)">X</button>`
+    document.querySelector('.filters').appendChild(filter);
+}
+
+function removeFilter(that) {
+    that.parentElement.remove();
+}
 
 setInterval(() => {
     fetch('/api/totals', {
@@ -423,4 +480,7 @@ setInterval(() => {
             document.getElementById('totalViews').innerHTML = data.totalViews
             document.getElementById('totalVideos').innerHTML = data.totalVideos
         }).catch(err => console.error(err));
-},5000)
+}, 5000)
+
+changeTheme('init')
+changeMode('init')

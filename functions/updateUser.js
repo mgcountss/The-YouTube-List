@@ -31,9 +31,9 @@ const updateUser = async (userId, ids) => {
                                     description: response.data.items[0].snippet.description
                                 },
                                 stats: {
-                                    views: parseInt(response.data.items[0].statistics.viewCount),
-                                    subscribers: parseInt(response.data.items[0].statistics.subscriberCount),
-                                    videos: parseInt(response.data.items[0].statistics.videoCount),
+                                    views: parseInt(response.data.items[0].statistics.viewCount ? response.data.items[0].statistics.viewCount : 0),
+                                    subscribers: parseInt(response.data.items[0].statistics.subscriberCount ? response.data.items[0].statistics.subscriberCount : 0),
+                                    videos: parseInt(response.data.items[0].statistics.videoCount ? response.data.items[0].statistics.videoCount : 0),
                                 },
                                 history: user.history,
                                 gains: {
@@ -120,9 +120,9 @@ const updateUser = async (userId, ids) => {
                                                     description: response.data.items[j].snippet.description
                                                 },
                                                 stats: {
-                                                    views: parseInt(response.data.items[j].statistics.viewCount),
-                                                    subscribers: parseInt(response.data.items[j].statistics.subscriberCount),
-                                                    videos: parseInt(response.data.items[j].statistics.videoCount)
+                                                    views: parseInt(response.data.items[j].statistics.viewCount ? response.data.items[j].statistics.viewCount : 0),
+                                                    subscribers: parseInt(response.data.items[j].statistics.subscriberCount ? response.data.items[j].statistics.subscriberCount : 0),
+                                                    videos: parseInt(response.data.items[j].statistics.videoCount ? response.data.items[j].statistics.videoCount : 0),
                                                 },
                                                 history: user.history,
                                                 gains: {

@@ -79,9 +79,17 @@ const addUser = async (userId, ids) => {
                                 }
                             },
                             stats: {
-                                views: parseInt(response.data.items[0].statistics.viewCount),
-                                subscribers: parseInt(response.data.items[0].statistics.subscriberCount),
-                                videos: parseInt(response.data.items[0].statistics.videoCount)
+                                views: parseInt(response.data.items[0].statistics.viewCount ? response.data.items[0].statistics.viewCount : 0),
+                                subscribers: parseInt(response.data.items[0].statistics.subscriberCount ? response.data.items[0].statistics.subscriberCount : 0),
+                                videos: parseInt(response.data.items[0].statistics.videoCount ? response.data.items[0].statistics.videoCount : 0)
+                            },
+                            history: {
+                                [new Date().toString().split(' ').slice(0, 4).join(' ')]: {
+                                    views: parseInt(response.data.items[0].statistics.viewCount ? response.data.items[0].statistics.viewCount : 0),
+                                    subscribers: parseInt(response.data.items[0].statistics.subscriberCount ? response.data.items[0].statistics.subscriberCount : 0),
+                                    videos: parseInt(response.data.items[0].statistics.videoCount ? response.data.items[0].statistics.videoCount : 0),
+                                    name: response.data.items[0].snippet.title
+                                }
                             }
                         });
                         return {
@@ -154,15 +162,15 @@ const addUser = async (userId, ids) => {
                                             }
                                         },
                                         stats: {
-                                            views: parseInt(response.data.items[i].statistics.viewCount),
-                                            subscribers: parseInt(response.data.items[i].statistics.subscriberCount),
-                                            videos: parseInt(response.data.items[i].statistics.videoCount)
+                                            views: parseInt(response.data.items[i].statistics.viewCount ? response.data.items[i].statistics.viewCount : 0),
+                                            subscribers: parseInt(response.data.items[i].statistics.subscriberCount ? response.data.items[i].statistics.subscriberCount : 0),
+                                            videos: parseInt(response.data.items[i].statistics.videoCount ? response.data.items[i].statistics.videoCount : 0)
                                         },
                                         history: {
                                             [dateString]: {
-                                                views: parseInt(response.data.items[i].statistics.viewCount),
-                                                subscribers: parseInt(response.data.items[i].statistics.subscriberCount),
-                                                videos: parseInt(response.data.items[i].statistics.videoCount),
+                                                views: parseInt(response.data.items[i].statistics.viewCount ? response.data.items[i].statistics.viewCount : 0),
+                                                subscribers: parseInt(response.data.items[i].statistics.subscriberCount ? response.data.items[i].statistics.subscriberCount : 0),
+                                                videos: parseInt(response.data.items[i].statistics.videoCount ? response.data.items[i].statistics.videoCount : 0),
                                                 name: response.data.items[i].snippet.title
                                             }
                                         }
