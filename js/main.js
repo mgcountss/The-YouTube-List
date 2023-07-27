@@ -159,6 +159,8 @@ function search() {
     }     
     document.getElementById('loader').style.display = "block";
     searching = true;
+    ids = [];
+    channels = [];
     getChannels();
 }
 

@@ -90,6 +90,26 @@ const addUser = async (userId, ids) => {
                                     videos: parseInt(response.data.items[0].statistics.videoCount ? response.data.items[0].statistics.videoCount : 0),
                                     name: response.data.items[0].snippet.title
                                 }
+                            },
+                            gains: {
+                                subscribers: {
+                                    daily: 0,
+                                    weekly: 0,
+                                    monthly: 0,
+                                    yearly: 0
+                                },
+                                views: {
+                                    daily: 0,
+                                    weekly: 0,
+                                    monthly: 0,
+                                    yearly: 0
+                                },
+                                videos: {
+                                    daily: 0,
+                                    weekly: 0,
+                                    monthly: 0,
+                                    yearly: 0
+                                }
                             }
                         });
                         return {
@@ -172,6 +192,26 @@ const addUser = async (userId, ids) => {
                                                 subscribers: parseInt(response.data.items[i].statistics.subscriberCount ? response.data.items[i].statistics.subscriberCount : 0),
                                                 videos: parseInt(response.data.items[i].statistics.videoCount ? response.data.items[i].statistics.videoCount : 0),
                                                 name: response.data.items[i].snippet.title
+                                            }
+                                        },
+                                        gains: {
+                                            subscribers: {
+                                                daily: 0,
+                                                weekly: 0,
+                                                monthly: 0,
+                                                yearly: 0
+                                            },
+                                            views: {
+                                                daily: 0,
+                                                weekly: 0,
+                                                monthly: 0,
+                                                yearly: 0
+                                            },
+                                            videos: {
+                                                daily: 0,
+                                                weekly: 0,
+                                                monthly: 0,
+                                                yearly: 0
                                             }
                                         }
                                     });
