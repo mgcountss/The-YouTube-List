@@ -30,14 +30,14 @@ async function getChannels() {
                             document.getElementById('table').innerHTML += `<tr onclick="openMenu('${channel.id}')">
                     <td><img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)"></td>
                     <td><h3 class="name">${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3></td>
-                    <td><h4 class="subscribers">${channel.stats.subscribers.toLocaleString()}</h4></td>
-                    <td><h4 class="views">${channel.stats.views.toLocaleString()}</h4></td>
-                    <td><h4 class="videos">${channel.stats.videos.toLocaleString()}</h4></td>
+                    <td><h4 class="subscribers">${channel.stats.subscribers.toLocaleString("en-US")}</h4></td>
+                    <td><h4 class="views">${channel.stats.views.toLocaleString("en-US")}</h4></td>
+                    <td><h4 class="videos">${channel.stats.videos.toLocaleString("en-US")}</h4></td>
                     <td><h4 class="country">${channel.user.country}</h4></td>
                     <td><h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4></td>
-                    <td><h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString()}</h4></td>
-                    <td><h4 class="gain24">${channel.gains.views.daily.toLocaleString()}</h4></td>
-                    <td><h4 class="gain24">${channel.gains.videos.daily.toLocaleString()}</h4></td></tr>`
+                    <td><h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString("en-US")}</h4></td>
+                    <td><h4 class="gain24">${channel.gains.views.daily.toLocaleString("en-US")}</h4></td>
+                    <td><h4 class="gain24">${channel.gains.videos.daily.toLocaleString("en-US")}</h4></td></tr>`
                             //`<td><textarea class="description">${channel.user.description}</textarea></td>`;
                         })
                     } else {
@@ -56,15 +56,15 @@ async function getChannels() {
                         <h3 class="name">${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3>
                         <div class="stats">
                             <div>
-                                <h4 class="subscribers">${channel.stats.subscribers.toLocaleString()}</h4>
+                                <h4 class="subscribers">${channel.stats.subscribers.toLocaleString("en-US")}</h4>
                                 <h5>Subscribers</h5>
                             </div>
                             <div>
-                                <h4 class="views">${channel.stats.views.toLocaleString()}</h4>
+                                <h4 class="views">${channel.stats.views.toLocaleString("en-US")}</h4>
                                 <h5>Views</h5>
                             </div>
                             <div>
-                                <h4 class="videos">${channel.stats.videos.toLocaleString()}</h4>
+                                <h4 class="videos">${channel.stats.videos.toLocaleString("en-US")}</h4>
                                 <h5>Videos</h5>
                             </div>
                             <div>
@@ -76,15 +76,15 @@ async function getChannels() {
                                 <h5>Joined</h5>
                             </div>
                             <div>
-                                <h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString()}</h4>
+                                <h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString("en-US")}</h4>
                                 <h5>Subscribers (24H Gain)</h5>
                             </div>
                             <div>
-                                <h4 class="gain24">${channel.gains.views.daily.toLocaleString()}</h4>
+                                <h4 class="gain24">${channel.gains.views.daily.toLocaleString("en-US")}</h4>
                                 <h5>Views (24H Gain)</h5>
                             </div>
                             <div>
-                                <h4 class="gain24">${channel.gains.videos.daily.toLocaleString()}</h4>
+                                <h4 class="gain24">${channel.gains.videos.daily.toLocaleString("en-US")}</h4>
                                 <h5>Videos (24H Gain)</h5>
                             </div>
                         </div>

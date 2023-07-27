@@ -65,7 +65,7 @@
             <div>
                 <h4>Total Videos</h4>
                 <h5 class="stat odometer" id="totalVideos">
-                    <%= total.totalVideos.toLocaleString() %>
+                    <%= total.totalVideos.toLocaleString("en-US") %>
                 </h5>
             </div>
         </div>
@@ -131,19 +131,19 @@
                         <div class="stats">
                             <div>
                                 <h4 class="subscribers">
-                                    <%=channel.stats.subscribers.toLocaleString()%>
+                                    <%=channel.stats.subscribers.toLocaleString("en-US")%>
                                 </h4>
                                 <h5>Subscribers</h5>
                             </div>
                             <div>
                                 <h4 class="views">
-                                    <%=channel.stats.views.toLocaleString()%>
+                                    <%=channel.stats.views.toLocaleString("en-US")%>
                                 </h4>
                                 <h5>Views</h5>
                             </div>
                             <div>
                                 <h4 class="videos">
-                                    <%=channel.stats.videos.toLocaleString()%>
+                                    <%=channel.stats.videos.toLocaleString("en-US")%>
                                 </h4>
                                 <h5>Videos</h5>
                             </div>
@@ -161,19 +161,19 @@
                             </div>
                             <div>
                                 <h4 class="gain24">
-                                    <%=channel.gains.subscribers.daily.toLocaleString()%>
+                                    <%=channel.gains.subscribers.daily.toLocaleString("en-US")%>
                                 </h4>
                                 <h5>Subscribers (24 Hours)</h5>
                             </div>
                             <div>
                                 <h4 class="gain24">
-                                    <%=channel.gains.views.daily.toLocaleString()%>
+                                    <%=channel.gains.views.daily.toLocaleString("en-US")%>
                                 </h4>
                                 <h5>Views (24 Hours)</h5>
                             </div>
                             <div>
                                 <h4 class="gain24">
-                                    <%=channel.gains.videos.daily.toLocaleString()%>
+                                    <%=channel.gains.videos.daily.toLocaleString("en-US")%>
                                 </h4>
                                 <h5>Videos (24 Hours)</h5>
                             </div>
@@ -247,7 +247,7 @@
     </div>
     <%- include('imports.ejs') %>
         <script src="js/fix.js"></script>
-        <script src="js/main.js?update=a7a675042-e1ae-4bf6-8ee4-e5541f50a4c3"></script>
+        <script src="js/main.js?update=a7a675042-e1ae-4bf6-8ee4-e541f50a4c3a"></script>
 </body>
 
 </html>
