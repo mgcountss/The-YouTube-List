@@ -139,6 +139,8 @@ setInterval(() => {
     }
 }, 60000);
 
+db.addGainsIfNotExists();
+
 app.listen(3002, () => {
     console.log('Server running on port 3002');
 })
