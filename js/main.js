@@ -23,7 +23,7 @@ async function getChannels() {
                 } else {
                     searching = false;
                     if (localStorage.getItem('mode') == 'list') {
-                        data.forEach((channel) => {
+                        data.channels.forEach((channel) => {
                             if (ids.includes(channel.id)) return;
                             ids.push(channel.id);
                             channels.push(channel);
@@ -41,7 +41,7 @@ async function getChannels() {
                             //`<td><textarea class="description">${channel.user.description}</textarea></td>`;
                         })
                     } else {
-                        data.forEach((channel) => {
+                        data.channels.forEach((channel) => {
                             if (ids.includes(channel.id)) return;
                             ids.push(channel.id);
                             channels.push(channel)

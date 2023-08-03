@@ -4,7 +4,7 @@ import getKey from './getKey.js';
 import searchChannel from './searchChannel.js';
 import updateUser from './updateUser.js';
 
-const addUser = async (userId, ids) => {
+const addUser = async (userId, ids, failed) => {
     if (userId) {
         if (((!userId.startsWith('@')) && ((!userId.startsWith('UC')) || (!userId.length == 24)))) {
             let r = await searchChannel(userId);
@@ -40,7 +40,11 @@ const addUser = async (userId, ids) => {
                     message: 'User already exists'
                 }
             }
-            return axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`)
+            let link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics&id=${userId}`
+            if (!failed) {
+                link `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`
+            }
+            return axios.get()
                 .then(async (response) => {
                     if (response.data.error) {
                         if (response.data.error.code == 403) {
@@ -120,7 +124,7 @@ const addUser = async (userId, ids) => {
                 })
                 .catch((error) => {
                     if (error.response.status == 403) {
-                        addUser(userId);
+                        addUser(userId, null, true);
                         return {
                             error: false,
                             message: 'User added successfully',
@@ -142,7 +146,11 @@ const addUser = async (userId, ids) => {
         }
         for (let i = 0; i < groups.length; i++) {
             try {
-                await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i]}&key=${getKey()}`)
+                let link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics&id=${groups[i]}`
+                if (!failed) {
+                    link `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i]}&key=${getKey()}`
+                }
+                await axios.get(link)
                     .then(async (response) => {
                         if (response.data.error) {
                             if (response.data.error.code == 403) {
@@ -220,7 +228,7 @@ const addUser = async (userId, ids) => {
                         }
                     }).catch((error) => {
                         if (error.response.status == 403) {
-                            addUser(null, groups[i].split(','));
+                            addUser(null, groups[i].split(','), true);
                         }
                     });
             } catch (error) {

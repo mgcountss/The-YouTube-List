@@ -16,47 +16,28 @@ mongoose.connect(`mongodb://${MONGO_URL}`, {
   .catch(err => console.log(err));
 
 let userSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    index: true,
-    unique: true
-  },
+  id: String,
   created: Number,
   updated: Number,
   deleted: Object,
   user: {
-    name: {
-      type: String,
-      index: true
-    },
+    name: String,
     logo: String,
     banner: String,
     country: String,
     joined: String,
-    description: {
-      type: String,
-      index: true
-    }
+    description: String,
   },
   stats: {
-    subscribers: {
-      type: Number,
-      index: true
-    },
+    subscribers: Number,
     views: Number,
     videos: Number
   },
   history: Object,
   gains: {
     subscribers: {
-      daily: {
-        type: Number,
-        index: true
-      },
-      weekly: {
-        type: Number,
-        index: true
-      },
+      daily: Number,
+      weekly: Number,
       monthly: Number,
       yearly: Number
     },
@@ -76,7 +57,21 @@ let userSchema = new mongoose.Schema({
 });
 
 let User = mongoose.model('users', userSchema);
-userSchema.index({ 'user.name': 1, 'user.description': 1, 'id': 1, 'stats.subscribers': 1, 'stats.views': 1, 'gains.subscribers.daily': 1, 'gains.subscribers.weekly': 1 });
+userSchema.index({ "stats.subscribers": -1 });
+console.log("Indexing... subscribers");
+userSchema.index({ "gains.subscribers.daily": -1 });
+console.log("Indexing... subscribers.daily");
+userSchema.index({ "gains.subscribers.weekly": -1 });
+console.log("Indexing... subscribers.weekly");
+userSchema.index({ "stats.views": -1 });
+console.log("Indexing... views");
+userSchema.index({ "created": -1 });
+console.log("Indexing... created");
+userSchema.index({ "user.name": 1 });
+console.log("Indexing... name");
+userSchema.index({ "user.description": 1 });
+console.log("Indexing... description");
+userSchema.index({ "id": 1 });
 
 const add = async (json) => {
   try {
@@ -149,25 +144,42 @@ const getMappedSort = (sortOption) => {
 
 const getall2 = async (options) => {
   try {
-    options.sort1 = getMappedSort(options.sort1);
-    options.sort2 = getMappedSort(options.sort2);
-    const documents = await User.find({
+    const { sort1, order1, sort2, order2, limit, offset, search, filters } = options;
+    const regexOptions = "i";
+
+    // Combine the search conditions for both find and countDocuments
+    const searchConditions = {
       $or: [
-        { "user.name": { $regex: options.search, $options: "i" } },
-        { "id": { $regex: options.search, $options: "i" } },
-        { "user.description": { $regex: options.search, $options: "i" } }
+        { "user.name": { $regex: search, $options: regexOptions } },
+        { "id": { $regex: search, $options: regexOptions } },
+        { "user.description": { $regex: search, $options: regexOptions } }
       ],
-      ...options.filters
-    }, { history: 0 }) // Exclude history field from the result
-      .sort({
-        [options.sort1]: options.order1 === "asc" ? 1 : -1,
-        [options.sort2]: options.order2 === "asc" ? 1 : -1
-      }).limit(options.limit).skip(options.offset);
-    return documents;
+      ...filters
+    };
+
+    // Use Promise.all to combine find and countDocuments queries
+    const [documents, total] = await Promise.all([
+      User.find(searchConditions, { history: 0 })
+        .sort({
+          [getMappedSort(sort1)]: order1 === "asc" ? 1 : -1,
+          [getMappedSort(sort2)]: order2 === "asc" ? 1 : -1
+        })
+        .limit(limit)
+        .skip(offset),
+      User.countDocuments(searchConditions)
+    ]);
+
+    return {
+      documents: documents,
+      total: total,
+      limit: limit,
+      offset: offset
+    };
   } catch (error) {
     console.log(error);
   }
 };
+
 
 const getall3 = async () => {
   try {

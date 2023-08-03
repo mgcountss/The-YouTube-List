@@ -21,8 +21,10 @@ app.use(bodyParser.json());
 let cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
 let totalCache = await db.getTotalDocuments();
 app.get('/', async (req, res) => {
-    let ids = cache.map(user => user.id);
-    res.render('index', { users: cache, total: totalCache, ids: ids });
+    let ids = cache.channels.map(user => user.id);
+    console.log(ids);
+    console.log(cache.total, cache.limit, cache.offset);
+    res.render('index', { users: cache.channels, totals: totalCache, ids: ids, limit: cache.limit, total: cache.total, offset: cache.offset });
     cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
 });
 

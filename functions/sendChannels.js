@@ -1,7 +1,7 @@
 import db from './db.js';
 const sendChannels = async (options) => {
-    let channels = await db.getall2(options);
-    channels.forEach(channel => {
+    let response = await db.getall2(options);
+    response.documents.forEach(channel => {
         if (!channel.gains) {
             channel.gains = {
                 subscribers: {
@@ -25,7 +25,12 @@ const sendChannels = async (options) => {
             }
         }
     })
-    return channels;
+    return {
+        channels: response.documents,
+        total: response.total,
+        limit: response.limit,
+        offset: response.offset
+    };
 };
 
 export default sendChannels;
