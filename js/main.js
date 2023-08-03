@@ -6,6 +6,7 @@ let sort2 = 'subscribers';
 let order1 = 'desc';
 let order2 = 'desc';
 let filters = {};
+let listValues = ['logo', 'name', 'subscribers', 'views', 'videos', 'country', 'joined'];
 async function getChannels() {
     fetch('/api/channels', {
         method: 'POST',
@@ -22,23 +23,33 @@ async function getChannels() {
                     end = true;
                 } else {
                     searching = false;
+                    document.getElementById('loaded').innerHTML = "Loaded From Search: " + (data.offset+data.limit).toLocaleString('en-US') + "/" + data.total.toLocaleString('en-US');
                     if (localStorage.getItem('mode') == 'list') {
                         data.channels.forEach((channel) => {
                             if (ids.includes(channel.id)) return;
                             ids.push(channel.id);
                             channels.push(channel);
+                            let tds = []
+                            listValues.forEach(value => {
+                                if (value == 'logo') {
+                                    tds.push(`<td><img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)"></td>`)
+                                } else if (value == 'name' || value == 'description') {
+                                    tds.push(`<td><h4 class="${value}">${channel.user[value].replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h4></td>`)
+                                } else if (value == 'subscribers' || value == 'views' || value == 'videos') {
+                                    tds.push(`<td><h4 class="${value}">${channel.stats[value].toLocaleString("en-US")}</h4></td>`)
+                                } else if (value == 'country') {
+                                    tds.push(`<td><h4 class="country">${channel.user.country ? channel.user.country : 'N/A'}</h4></td>`)
+                                } else if (value == 'joined') {
+                                    tds.push(`<td><h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4></td>`)
+                                } else if (value == 'subscribers24' || value == 'views24' || value == 'videos24') {
+                                    tds.push(`<td><h4 class="gain24">${channel.gains[value.split('24')[0]].daily.toLocaleString("en-US")}</h4></td>`)
+                                } else if (value == 'subscribers7' || value == 'views7' || value == 'videos7') {
+                                    tds.push(`<td><h4 class="gain7">${channel.gains[value.split('7')[0]].weekly.toLocaleString("en-US")}</h4></td>`)
+                                }
+                            })
                             document.getElementById('table').innerHTML += `<tr onclick="openMenu('${channel.id}')">
-                    <td><img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)"></td>
-                    <td><h3 class="name">${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3></td>
-                    <td><h4 class="subscribers">${channel.stats.subscribers.toLocaleString("en-US")}</h4></td>
-                    <td><h4 class="views">${channel.stats.views.toLocaleString("en-US")}</h4></td>
-                    <td><h4 class="videos">${channel.stats.videos.toLocaleString("en-US")}</h4></td>
-                    <td><h4 class="country">${channel.user.country}</h4></td>
-                    <td><h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4></td>
-                    <td><h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString("en-US")}</h4></td>
-                    <td><h4 class="gain24">${channel.gains.views.daily.toLocaleString("en-US")}</h4></td>
-                    <td><h4 class="gain24">${channel.gains.videos.daily.toLocaleString("en-US")}</h4></td></tr>`
-                            //`<td><textarea class="description">${channel.user.description}</textarea></td>`;
+                            ${tds.map(td => td).join('')}
+                            </tr>`
                         })
                     } else {
                         data.channels.forEach((channel) => {
@@ -50,10 +61,10 @@ async function getChannels() {
                             card.onclick = "openMenu('" + channel.id + "')";
                             document.querySelector('.channels').innerHTML += `<div class="card" onclick="openMenu('${channel.id}')">
                     <div class="banner" style="background-image: url('${channel.user.banner}')">
-                        <img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)">
+                        <img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('avatar', this)">
                     </div>
-                    <div class="card-body">
-                        <h3 class="name">${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3>
+                    <div class="card-body"><h3 class="name">${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h3>
+                        <hr>
                         <div class="stats">
                             <div>
                                 <h4 class="subscribers">${channel.stats.subscribers.toLocaleString("en-US")}</h4>
@@ -67,30 +78,48 @@ async function getChannels() {
                                 <h4 class="videos">${channel.stats.videos.toLocaleString("en-US")}</h4>
                                 <h5>Videos</h5>
                             </div>
+                        </div>
+                        <div class="misc">
                             <div>
-                                <h4 class="country">${channel.user.country}</h4>
+                                <h4 class="country">${channel.user.country ? channel.user.country : 'N/A'}</h4>
                                 <h5>Country</h5>
                             </div>
                             <div>
-                                <h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4>
+                                <h4 class="country">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4>
                                 <h5>Joined</h5>
                             </div>
+                        </div>
+                        <hr>
+                        <div class="stats">
                             <div>
                                 <h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString("en-US")}</h4>
-                                <h5>Subscribers (24H Gain)</h5>
+                                <h5>Subscribers (24 Hours)</h5>
                             </div>
                             <div>
                                 <h4 class="gain24">${channel.gains.views.daily.toLocaleString("en-US")}</h4>
-                                <h5>Views (24H Gain)</h5>
+                                <h5>Views (24 Hours)</h5>
                             </div>
                             <div>
                                 <h4 class="gain24">${channel.gains.videos.daily.toLocaleString("en-US")}</h4>
-                                <h5>Videos (24H Gain)</h5>
+                                <h5>Videos (24 Hours)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain7">${channel.gains.subscribers.weekly.toLocaleString("en-US")}</h4>
+                                <h5>Subscribers (7 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain7">${channel.gains.views.weekly.toLocaleString("en-US")}</h4>
+                                <h5>Views (7 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain7">${channel.gains.videos.weekly.toLocaleString("en-US")}</h4>
+                                <h5>Videos (7 Days)</h5>
                             </div>
                         </div>
-                    </div><hr>
+                    </div>
+                    <hr>
                     <textarea class="description">${channel.user.description}</textarea>
-                    </div>`;
+                </div>`;
                         });
                     }
                     if (document.getElementById('loadMore')) {
@@ -116,9 +145,6 @@ function search() {
         <th>Videos</th>
         <th>Country</th>
         <th>Joined</th>
-        <th>Subscribers (24H Gain)</th>
-        <th>Views (24H Gain)</th>
-        <th>Videos (24H Gain)</th>
     </tr>`;
     } else {
         document.querySelector('.channels').innerHTML = '';
@@ -133,7 +159,7 @@ function search() {
         let type = filter[q].querySelector('.filterType').value;
         let operator = filter[q].querySelector('.filterOperator').value;
         let value = filter[q].querySelector('.filterValue').value;
-        if (type == 'subscribers' || type == 'views' || type == 'videos' || type == 'subscribers24' || type == 'views24' || type == 'videos24') {
+        if (type == 'subscribers' || type == 'views' || type == 'videos' || type == 'subscribers24' || type == 'views24' || type == 'videos24' || type == 'subscribers7' || type == 'views7' || type == 'videos7') {
             value = parseInt(value);
             type = 'stats.' + type;
         } else if (type == 'joined' || type == 'country') {
@@ -141,7 +167,7 @@ function search() {
         } else {
             type = 'gains.' + type;
         }
-        if (type == 'stats.subscribers' || type == 'stats.views' || type == 'stats.videos' || type == 'gains.subscribers24' || type == 'gains.views24' || type == 'gains.videos24' || type == 'user.joined' || type == 'user.country') {
+        if (type == 'stats.subscribers' || type == 'stats.views' || type == 'stats.videos' || type == 'gains.subscribers24' || type == 'gains.views24' || type == 'gains.videos24' || type == 'user.joined' || type == 'user.country' || type == 'gains.subscribers7' || type == 'gains.views7' || type == 'gains.videos7') {
             if (operator == '=') {
                 filters[type] = value;
             } else if (operator == '>') {
@@ -156,7 +182,7 @@ function search() {
         } else if (type == 'country') {
             filters[type] = value;
         }
-    }     
+    }
     document.getElementById('loader').style.display = "block";
     searching = true;
     ids = [];
@@ -350,27 +376,26 @@ function closePopup3() {
 }
 
 function changeTheme(a) {
-    if (a) {
-        if (localStorage.getItem('theme') == 'dark') {
-            document.getElementById('themeLink').href = '/css/dark.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c0';
-            document.getElementById('theme').innerHTML = 'Light Mode';
-        }
+    var theme = localStorage.getItem('theme');
+    if (!theme) {
+        localStorage.setItem('theme', 'dark');
     } else {
-        if (localStorage.getItem('theme') == 'dark') {
-            localStorage.setItem('theme', 'light');
-            document.getElementById('themeLink').href = '/css/style.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c0';
-            document.getElementById('theme').innerHTML = 'Dark Mode';
-        } else {
-            localStorage.setItem('theme', 'dark');
-            document.getElementById('themeLink').href = '/css/dark.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c0';
-            document.getElementById('theme').innerHTML = 'Light Mode';
+        if (!a) {
+            theme = (theme === 'light') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
         }
+        document.getElementById('themeLink').href = '/css/' + theme + '.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c1';
+        document.getElementById('theme').innerHTML = (theme === 'light') ? 'Dark Mode' : 'Light Mode';
     }
 }
+
 
 function changeMode(a) {
     if (a) {
         if (localStorage.getItem('mode') == 'list') {
+            if (localStorage.getItem('listValues')) {
+                listValues = localStorage.getItem('listValues').split(',');
+            }
             document.getElementById('mode').innerHTML = 'Grid View';
             offset = 0;
             ids = [];
@@ -378,16 +403,7 @@ function changeMode(a) {
             document.querySelector('.channels').style.gridTemplateColumns = '1fr';
             document.getElementById('channels').innerHTML = `<table class="table" id="table">
             <tr>
-                <th>Logo</th>
-                <th>Name</th>
-                <th>Subscribers</th>
-                <th>Views</th>
-                <th>Videos</th>
-                <th>Country</th>
-                <th>Joined</th>
-                <th>Subscribers (24H Gain)</th>
-                <th>Views (24H Gain)</th>
-                <th>Videos (24H Gain)</th>
+            ${listValues.map(value => `<th>${value.charAt(0).toUpperCase() + value.slice(1)}</th>`).join('')}
             </tr>
             </table>`
             getChannels();
@@ -417,6 +433,8 @@ function openMenu(id) {
     document.getElementById('menu').style.display = 'flex';
     let channel = channels.find(channel => channel.id == id);
     document.getElementById('id').innerHTML = channel.id;
+    document.getElementById('added').innerHTML = new Date(channel.created).toString().split('GMT')[0];
+    document.getElementById('updated').innerHTML = new Date(channel.updated).toString().split('GMT')[0];
     document.getElementById('visit').onclick = () => {
         window.open(`https://youtube.com/channel/${channel.id}`);
     }
@@ -452,6 +470,9 @@ function addFilter() {
     <option value="subscribers24">Subscribers (24H Gain)</option>
     <option value="views24">Views (24H Gain)</option>
     <option value="videos24">Videos (24H Gain)</option>
+    <option value="subscribers7">Subscribers (7D Gain)</option>
+    <option value="views7">Views (7D Gain)</option>
+    <option value="videos7">Videos (7D Gain)</option>
 </select>
 <select class="filterOperator">
     <option value="=">=</option>
@@ -463,6 +484,29 @@ function addFilter() {
 <input type="text" class="filterValue" placeholder="Value">
 <button class="removeFilter" onclick="removeFilter(this)">X</button>`
     document.querySelector('.filters').appendChild(filter);
+}
+
+function addSelection() {
+    let selection = document.createElement('div');
+    selection.classList.add('selection');
+    selection.innerHTML = `<select class="selectionType">
+    <option value="logo">Logo</option>
+    <option value="name">Name</option>
+    <option value="description">Description</option>
+    <option value="subscribers">Subscribers</option>
+    <option value="views">Views</option>
+    <option value="videos">Videos</option>
+    <option value="country">Country</option>
+    <option value="joined">Joined</option>
+    <option value="subscribers24">Subscribers (24H Gain)</option>
+    <option value="views24">Views (24H Gain)</option>
+    <option value="videos24">Videos (24H Gain)</option>
+    <option value="subscribers7">Subscribers (7D Gain)</option>
+    <option value="views7">Views (7D Gain)</option>
+    <option value="videos7">Videos (7D Gain)</option>
+</select>
+<button class="removeFilter" onclick="removeFilter(this)">X</button>`
+    document.querySelector('.selections').appendChild(selection);
 }
 
 function removeFilter(that) {
@@ -484,5 +528,42 @@ setInterval(() => {
         }).catch(err => console.error(err));
 }, 5000)
 
+function reloadSavedListValues() {
+    let list = ""
+    document.querySelectorAll('.selectionType').forEach(value => {
+        list += value.value + ','
+    })
+    localStorage.setItem('listValues', list.slice(0, -1))
+    location.reload()
+}
+
+function checkSavedListValues() {
+    if (localStorage.getItem('listValues')) {
+        let list = localStorage.getItem('listValues').split(',')
+        list.forEach(value => {
+            document.querySelector('.selections').innerHTML += `<div class="selection">
+            <select class="selectionType" onchange="changeFilter(this)">
+                <option value="logo" ${value == 'logo' ? 'selected' : ''}>Logo</option>
+                <option value="name" ${value == 'name' ? 'selected' : ''}>Name</option>
+                <option value="description" ${value == 'description' ? 'selected' : ''}>Description</option>
+                <option value="subscribers" ${value == 'subscribers' ? 'selected' : ''}>Subscribers</option>
+                <option value="views" ${value == 'views' ? 'selected' : ''}>Views</option>
+                <option value="videos" ${value == 'videos' ? 'selected' : ''}>Videos</option>
+                <option value="country" ${value == 'country' ? 'selected' : ''}>Country</option>
+                <option value="joined" ${value == 'joined' ? 'selected' : ''}>Joined</option>
+                <option value="subscribers24" ${value == 'subscribers24' ? 'selected' : ''}>Subscribers (24H Gain)</option>
+                <option value="views24" ${value == 'views24' ? 'selected' : ''}>Views (24H Gain)</option>
+                <option value="videos24" ${value == 'videos24' ? 'selected' : ''}>Videos (24H Gain)</option>
+                <option value="subscribers7" ${value == 'subscribers7' ? 'selected' : ''}>Subscribers (7D Gain)</option>
+                <option value="views7" ${value == 'views7' ? 'selected' : ''}>Views (7D Gain)</option>
+                <option value="videos7" ${value == 'videos7' ? 'selected' : ''}>Videos (7D Gain)</option>
+            </select>
+            <button class="removeFilter" onclick="removeFilter(this)">X</button>
+        </div>`
+        })
+    }
+}
+
 changeTheme('init')
 changeMode('init')
+checkSavedListValues()

@@ -66,12 +66,14 @@ console.log("Indexing... subscribers.weekly");
 userSchema.index({ "stats.views": -1 });
 console.log("Indexing... views");
 userSchema.index({ "created": -1 });
+userSchema.index({ "created": 1 });
 console.log("Indexing... created");
 userSchema.index({ "user.name": 1 });
 console.log("Indexing... name");
 userSchema.index({ "user.description": 1 });
 console.log("Indexing... description");
 userSchema.index({ "id": 1 });
+console.log("Indexing... id");
 
 const add = async (json) => {
   try {

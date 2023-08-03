@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>The YouTube List</title>
-    <link href="css/style.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c0" rel="stylesheet" id="themeLink" />
+    <link href="css/dark.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c1" rel="stylesheet" id="themeLink" />
     <link href="css/odometer.css" rel="stylesheet" />
     <script src="js/odometer.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -84,6 +84,9 @@
             <option value="subscribers24">24 Hour Gain (Subscribers)</option>
             <option value="views24">24 Hour Gain (Views)</option>
             <option value="videos24">24 Hour Gain (Videos)</option>
+            <option value="subscribers7">7 Day Gain (Subscribers)</option>
+            <option value="views7">7 Day Gain (Views)</option>
+            <option value="videos7">7 Day Gain (Videos)</option>
             <option value="name">Name</option>
             <option value="description">Description</option>
         </select>
@@ -102,6 +105,9 @@
             <option value="subscribers24">24 Hour Gain (Subscribers)</option>
             <option value="views24">24 Hour Gain (Views)</option>
             <option value="videos24">24 Hour Gain (Videos)</option>
+            <option value="subscribers7">7 Day Gain (Subscribers)</option>
+            <option value="views7">7 Day Gain (Views)</option>
+            <option value="videos7">7 Day Gain (Videos)</option>
             <option value="name">Name</option>
             <option value="description">Description</option>
         </select>
@@ -112,7 +118,11 @@
         <div class="filters"></div>
         <button onclick="addFilter()" class="addFilter">Add Filter</button>
         <button onclick="search()" class="search">Search</button>
-        <button style="float: right;" onclick="settings()">Settings</button>
+        <button class="settingsButton" onclick="settings()">Settings</button>
+    </div>
+    <hr>
+    <div>
+        <h3 id="loaded">Loaded From Search: 5/<%= totals.totalChannels.toLocaleString('en-US') %></h3>
     </div>
     <hr>
     <center>
@@ -147,6 +157,8 @@
                                 </h4>
                                 <h5>Videos</h5>
                             </div>
+                        </div>
+                        <div class="misc">
                             <div>
                                 <h4 class="country">
                                     <%=channel.user.country ? channel.user.country : 'N/A' %>
@@ -159,6 +171,9 @@
                                 </h4>
                                 <h5>Joined</h5>
                             </div>
+                        </div>
+                        <hr>
+                        <div class="stats">
                             <div>
                                 <h4 class="gain24">
                                     <%=channel.gains.subscribers.daily.toLocaleString("en-US")%>
@@ -176,6 +191,24 @@
                                     <%=channel.gains.videos.daily.toLocaleString("en-US")%>
                                 </h4>
                                 <h5>Videos (24 Hours)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain7">
+                                    <%=channel.gains.subscribers.weekly.toLocaleString("en-US")%>
+                                </h4>
+                                <h5>Subscribers (7 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain7">
+                                    <%=channel.gains.views.weekly.toLocaleString("en-US")%>
+                                </h4>
+                                <h5>Views (7 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain7">
+                                    <%=channel.gains.videos.weekly.toLocaleString("en-US")%>
+                                </h4>
+                                <h5>Videos (7 Days)</h5>
                             </div>
                         </div>
                     </div>
@@ -218,10 +251,20 @@
         <div class="settings2">
             <center>
                 <button class="close" onclick="closePopup2()">Exit Tab</button><br>
-                <button id="theme" onclick="changeTheme()" style="float: left;">Dark Mode</button>
-                <div style="float: right;">
+                <button id="theme" onclick="changeTheme()" class="darkTheme">Light Mode</button>
+                <div class="settingsButton">
                     <button id="mode" onclick="changeMode()">List Mode</button><br>
                     <label>This will reload the page</label>
+                </div>
+                <br>
+                <hr>
+                <h3>List Mode Values</h3>
+                <h5>Select what values you would like to see on list mode.</h5>
+                <br>
+                <button onclick="reloadSavedListValues()">Reload Saved Values (This will reload the page)</button><br><hr>
+                <div id="listSelections">
+                    <button onclick="addSelection()" class="addSelection">Add Selection</button>
+                    <div class="selections"></div>
                 </div>
             </center>
         </div>
@@ -232,13 +275,12 @@
                 <button id="update" onclick="updateUser()">Update User</button>
                 <br>
                 <br>
-                <hr>
-                <br>
                 <h4>Channel ID:</h4>
                 <h3 id="id"></h3>
-                <hr>
-                <h3 id="visit" style="cursor: pointer; background-color: #161616;">Visit Channel</h3>
-                <button style="font-size: 2vw;" onclick="closePopup3()">Exit Tab</button><br>
+                <button id="visit" class="search_button">Visit Channel</button><br>
+                <h3 id="added">Added: </h3>
+                <h3 id="updated">Updated: </h3>
+                <button class="search_button" onclick="closePopup3()">Exit Tab</button><br>
             </center>
         </div>
     </div>
@@ -247,7 +289,7 @@
     </div>
     <%- include('imports.ejs') %>
         <script src="js/fix.js"></script>
-        <script src="js/main.js?update=a7a675042-e1ae-4bf6-8ee4-e541f50a4c3a"></script>
+        <script src="js/main.js?update=a7a675042-e1ae-4bf6-8ee4-e541f50a4c3b"></script>
 </body>
 
 </html>
