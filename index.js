@@ -120,6 +120,8 @@ app.post('/api/addBulk', async (req, res) => {
             i -= 1;
         }
     }
+    ids = new Set(ids);
+    ids = Array.from(ids);
     addUser(null, ids);
     res.send({
         error: false,

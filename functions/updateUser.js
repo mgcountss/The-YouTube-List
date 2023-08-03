@@ -2,11 +2,15 @@ import db from './db.js';
 import axios from 'axios';
 import getKey from './getKey.js';
 
-const updateUser = async (userId, ids) => {
+const updateUser = async (userId, ids, fail) => {
     if (userId) {
         let user = await db.find('id', userId)
         if (user) {
-            await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`)
+            let link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics,brandingSettings&id=${userId}`
+            if (!fail) {
+                link = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`
+            }
+            await axios.get(link)
                 .then(async (response) => {
                     if (!response.data.error) {
                         if (response.data.items) {
@@ -90,7 +94,11 @@ const updateUser = async (userId, ids) => {
         for (let i = 0; i < groups.length; i++) {
             console.log(`fetched`)
             try {
-                await axios.get(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i].join(',')}&key=${getKey()}`)
+                let link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics,brandingSettings&id=${groups[i].join(',')}`
+                if (!fail) {
+                    link = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i].join(',')}&key=${getKey()}`
+                }
+                await axios.get(link)
                     .then(async (response) => {
                         if (!response.data.error) {
                             if (response.data.items) {

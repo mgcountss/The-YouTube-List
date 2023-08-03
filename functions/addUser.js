@@ -40,9 +40,9 @@ const addUser = async (userId, ids, failed) => {
                     message: 'User already exists'
                 }
             }
-            let link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics&id=${userId}`
+            let link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics,brandingSettings&id=${userId}`
             if (!failed) {
-                link `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`
+                link`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`
             }
             return axios.get()
                 .then(async (response) => {
@@ -131,11 +131,11 @@ const addUser = async (userId, ids, failed) => {
                             quota: true
                         }
                     } else {
-                    return {
-                        error: true,
-                        message: 'Error while updating user, this error was not your fault!'
+                        return {
+                            error: true,
+                            message: 'Error while updating user, this error was not your fault!'
+                        }
                     }
-                }
                 });
         }
     } else {
@@ -145,16 +145,17 @@ const addUser = async (userId, ids, failed) => {
             groups.push(ids.slice(i, i + 50));
         }
         for (let i = 0; i < groups.length; i++) {
+            console.log(`https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics,brandingSettings&id=${groups[i]}`);
             try {
-                let link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics&id=${groups[i]}`
+                let link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics,brandingSettings&id=${groups[i]}`
                 if (!failed) {
-                    link `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i]}&key=${getKey()}`
+                    link = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i]}&key=${getKey()}`
                 }
                 await axios.get(link)
                     .then(async (response) => {
                         if (response.data.error) {
                             if (response.data.error.code == 403) {
-                                addUser(null, groups[i].split(','));
+                                addUser(null, groups[i].split(','), true);
                             } else {
                                 return {
                                     error: true,
