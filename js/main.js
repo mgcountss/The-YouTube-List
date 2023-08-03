@@ -433,8 +433,8 @@ function openMenu(id) {
     document.getElementById('menu').style.display = 'flex';
     let channel = channels.find(channel => channel.id == id);
     document.getElementById('id').innerHTML = channel.id;
-    document.getElementById('added').innerHTML = new Date(channel.created).toString().split('GMT')[0];
-    document.getElementById('updated').innerHTML = new Date(channel.updated).toString().split('GMT')[0];
+    document.getElementById('added').innerHTML = "Added: "+new Date(channel.created).toString().split('GMT')[0];
+    document.getElementById('updated').innerHTML = "Updated: "+new Date(channel.updated).toString().split('GMT')[0];
     document.getElementById('visit').onclick = () => {
         window.open(`https://youtube.com/channel/${channel.id}`);
     }

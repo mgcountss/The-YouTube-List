@@ -129,9 +129,11 @@ const addUser = async (userId, ids, failed) => {
                 }
             } catch (error) {
                 if (error.response && error.response.status === 403) {
+                    addUser(userId, ids, true);
                     return {
-                        error: true,
-                        message: 'Error while updating user, this error was not your fault!'
+                        error: false,
+                        message: 'User added successfully',
+                        quota: true
                     };
                 } else {
                     return {
@@ -163,9 +165,10 @@ const addUser = async (userId, ids, failed) => {
                             quota: true
                         };
                     } else {
+                        addUser(userId, ids, true);
                         return {
                             error: true,
-                            message: 'Error while updating user, this error was not your fault!'
+                            message: 'Error while updating user, this error was not your fault!, 1'
                         };
                     }
                 }
@@ -245,7 +248,7 @@ const addUser = async (userId, ids, failed) => {
                 } else {
                     return {
                         error: true,
-                        message: 'Error while updating user, this error was not your fault!'
+                        message: 'Error while updating user, this error was not your fault!, 2'
                     };
                 }
             }

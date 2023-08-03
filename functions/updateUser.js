@@ -69,7 +69,7 @@ const updateUser = async (userId, ids, fail) => {
                 } else {
                     return {
                         error: true,
-                        message: 'Error while updating user, this error was not your fault!',
+                        message: 'Error while updating user, this error was not your fault!, 3',
                     };
                 }
             } catch (error) {
