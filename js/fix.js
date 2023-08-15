@@ -1,7 +1,7 @@
 function fix(input) {
   input = input.replace('Abonnenten', 'Subscribers');
   if (input.includes('Mio.')) {
-    input = input.replace(' Mio.', 'M');
+    input = input.replace('Â Mio.', 'M');
     input = input.replace(',', '.');
     if (input.includes('000')) {
       input = input.replace('.000', 'K');

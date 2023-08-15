@@ -144,6 +144,8 @@ setInterval(() => {
 }, 60000);
 
 db.addGainsIfNotExists();
+fork('./updateAll.js', [process.env.MONGO_URL, process.env.MONGO_USER, process.env.MONGO_PASSWORD, process.env.YOUTUBE_API_KEYS]);
+
 
 app.listen(3002, () => {
     console.log('Server running on port 3002');
