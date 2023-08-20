@@ -409,7 +409,7 @@ function changeTheme(a) {
             theme = (theme === 'light') ? 'dark' : 'light';
             localStorage.setItem('theme', theme);
         }
-        document.getElementById('themeLink').href = '/css/' + theme + '.css?update=a7a679042-e1ae-4bf6-8ee4-e5541f50a4c1';
+        document.getElementById('themeLink').href = '/css/' + theme + '.css?update=fa300b6e1f62';
         document.getElementById('theme').innerHTML = (theme === 'light') ? 'Dark Mode' : 'Light Mode';
     }
 }
