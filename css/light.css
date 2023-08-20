@@ -1,16 +1,16 @@
 body {
     background-color: #f1f1f1;
     font-family: Arial, Helvetica, sans-serif;
-    color: #000
+    color: #000;
 }
 
 * {
-    box-sizing: border-box
+    box-sizing: border-box;
 }
 
 h1,
 p {
-    text-align: center
+    text-align: center;
 }
 
 .card {
@@ -18,7 +18,7 @@ p {
     padding: 1vw;
     margin-top: 1vw;
     border: 1px solid #ccc;
-    width: 48vw
+    width: 48vw;
 }
 
 .banner {
@@ -28,12 +28,12 @@ p {
     background-size: cover;
     background-position: center;
     margin-top: 0;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 @media screen and (max-width:600px) {
     .banner {
-        height: 7vh
+        height: 7vh;
     }
 }
 
@@ -42,33 +42,45 @@ p {
     font-size: 2vw;
     margin-top: 0;
     font-weight: bolder;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 h4 {
     font-size: 1.5vw;
     margin-top: 0;
-    margin-bottom: 0
-}
-
-h5 {
-    font-size: 1vw;
-    margin-top: 0;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .logo {
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    border: solid #000 .3vw
+    border: solid #000 .3vw;
+}
+
+h5 {
+    font-size: 1vw;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .stats {
-    margin-top: 1vw;
-    margin-bottom: 1vw;
+    margin-top: 0vw;
+    margin-bottom: 0vw;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+}
+
+.gains {
+    margin-top: 1vw;
+    margin-bottom: 0vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.gains h5 {
+    margin-top: 0vw;
+    margin-bottom: 0.5vw;
 }
 
 .misc {
@@ -80,7 +92,7 @@ h5 {
 
 hr {
     margin-top: 0;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .description {
@@ -89,12 +101,12 @@ hr {
     width: 100%;
     font-size: 1vw;
     overflow: hidden;
-    resize: vertical
+    resize: vertical;
 }
 
 .add {
     font-size: 3vw;
-    margin-bottom: .5vw
+    margin-bottom: .5vw;
 }
 
 .popup {
@@ -106,7 +118,7 @@ hr {
     background-color: rgba(0, 0, 0, .5);
     display: none;
     justify-content: center;
-    align-items: center
+    align-items: center;
 }
 
 .loaderBack {
@@ -118,16 +130,15 @@ hr {
     background-color: rgba(0, 0, 0, .3);
     display: none;
     justify-content: center;
-    align-items: center
+    align-items: center;
 }
 
 @keyframes loading {
     0% {
-        transform: rotate(0)
+        transform: rotate(0);
     }
-
     100% {
-        transform: rotate(360deg)
+        transform: rotate(360deg);
     }
 }
 
@@ -142,7 +153,7 @@ hr {
     top: 50%;
     left: 50%;
     margin-top: -5vw;
-    margin-left: -5vw
+    margin-left: -5vw;
 }
 
 .popup2 {
@@ -157,7 +168,7 @@ hr {
     text-align: center;
     border-radius: 3%;
     border: solid 4px #000;
-    overflow-x: scroll
+    overflow-x: scroll;
 }
 
 #name {
@@ -165,7 +176,7 @@ hr {
     height: 10%;
     font-size: 2vw;
     margin-top: 0;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .search2 {
@@ -173,14 +184,14 @@ hr {
     height: 10%;
     font-size: 2vw;
     margin-top: 0;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .popup-header {
     display: flex;
     justify-content: space-between;
     width: 90%;
-    margin-top: 0
+    margin-top: 0;
 }
 
 .close {
@@ -207,42 +218,42 @@ hr {
 
 .addChannel {
     margin-left: 0;
-    font-size: 3vw
+    font-size: 3vw;
 }
 
 .search_handle,
 .search_name,
 .search_stats {
     margin-top: 0;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .search_avatar {
     height: 7vw;
-    width: 7vw
+    width: 7vw;
 }
 
 .search_name {
-    font-size: 1.5vw
+    font-size: 1.5vw;
 }
 
 .search_handle {
-    font-size: 1vw
+    font-size: 1vw;
 }
 
 .search_stats {
     font-size: 1vw;
-    margin-bottom: .5vw
+    margin-bottom: .5vw;
 }
 
 .search_button {
-    font-size: 2vw
+    font-size: 2vw;
 }
 
 .title {
     font-size: 3vw;
     margin-top: 0;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 #bulk {
@@ -250,28 +261,28 @@ hr {
     height: 10%;
     font-size: 1vw;
     margin-top: 0;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .spanList {
     background-color: #000;
-    color: #fff
+    color: #fff;
 }
 
 #popup-content2 {
-    display: none
+    display: none;
 }
 
 .channels {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 1vw
+    grid-gap: 1vw;
 }
 
 button,
 option,
 select {
-    color: #000
+    color: #000;
 }
 
 .grid4 {
@@ -310,7 +321,7 @@ h4 {
     background-color: rgba(0, 0, 0, .5);
     display: none;
     justify-content: center;
-    align-items: center
+    align-items: center;
 }
 
 .settings2 {
@@ -325,10 +336,12 @@ h4 {
     text-align: center;
     border-radius: 3%;
     border: solid 4px #000;
-    overflow-x: scroll
+    overflow-x: scroll;
 }
 
-#theme, #mode, #update {
+#theme,
+#mode,
+#update {
     font-size: 2vw;
 }
 
@@ -340,15 +353,20 @@ h4 {
     float: right;
 }
 
-tr, td, th {
+tr,
+td,
+th {
     width: 12vw;
     border: solid 1px #000;
+    word-wrap: break-word;
 }
 
 table {
     border-collapse: collapse;
     width: 100%;
     text-align: left;
+    word-wrap: break-word;
+    table-layout: fixed;
 }
 
 .menu {
@@ -360,7 +378,7 @@ table {
     background-color: rgba(0, 0, 0, .5);
     display: none;
     justify-content: center;
-    align-items: center
+    align-items: center;
 }
 
 .menu2 {
@@ -369,11 +387,11 @@ table {
     height: 75%;
     top: 20%;
     left: 25%;
-    background-color: #fff;
+    background-color: #000;
     justify-content: center;
     align-items: center;
     text-align: center;
     border-radius: 3%;
-    border: solid 4px #000;
-    overflow-x: scroll
+    border: solid 4px #FFF;
+    overflow: scroll;
 }

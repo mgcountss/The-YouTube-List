@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
-
+let caches = {};
 const MONGO_URL = process.env.MONGO_URL || process.argv[2];
 const MONGO_USER = process.env.MONGO_USER || process.argv[3];
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD || process.argv[4];
@@ -57,23 +57,6 @@ let userSchema = new mongoose.Schema({
 });
 
 let User = mongoose.model('users', userSchema);
-userSchema.index({ "stats.subscribers": -1 });
-console.log("Indexing... subscribers");
-userSchema.index({ "gains.subscribers.daily": -1 });
-console.log("Indexing... subscribers.daily");
-userSchema.index({ "gains.subscribers.weekly": -1 });
-console.log("Indexing... subscribers.weekly");
-userSchema.index({ "stats.views": -1 });
-console.log("Indexing... views");
-userSchema.index({ "created": -1 });
-userSchema.index({ "created": 1 });
-console.log("Indexing... created");
-userSchema.index({ "user.name": 1 });
-console.log("Indexing... name");
-userSchema.index({ "user.description": 1 });
-console.log("Indexing... description");
-userSchema.index({ "id": 1 });
-console.log("Indexing... id");
 
 const add = async (json) => {
   try {
@@ -97,7 +80,7 @@ const find = async (type, value) => {
   } catch (error) { }
 };
 
-const getall = async () => {
+const getallDocuments = async () => {
   try {
     const documents = await User.find({}, { id: 1, _id: 1 });
     return documents;
@@ -124,8 +107,6 @@ const removeDuplicates = async () => {
   }
 };
 
-removeDuplicates()
-
 const sortMap = {
   subscribers24: "gains.subscribers.daily",
   subscribers7: "gains.subscribers.weekly",
@@ -144,12 +125,10 @@ const getMappedSort = (sortOption) => {
   return sortMap[sortOption] || (sortOption === "views" || sortOption === "subscribers" || sortOption === "videos" ? `stats.${sortOption}` : `user.${sortOption}`);
 };
 
-const getall2 = async (options) => {
+const getall = async (options) => {
   try {
     const { sort1, order1, sort2, order2, limit, offset, search, filters } = options;
     const regexOptions = "i";
-
-    // Combine the search conditions for both find and countDocuments
     const searchConditions = {
       $or: [
         { "user.name": { $regex: search, $options: regexOptions } },
@@ -158,8 +137,6 @@ const getall2 = async (options) => {
       ],
       ...filters
     };
-
-    // Use Promise.all to combine find and countDocuments queries
     const [documents, total] = await Promise.all([
       User.find(searchConditions, { history: 0 })
         .sort({
@@ -170,7 +147,6 @@ const getall2 = async (options) => {
         .skip(offset),
       User.countDocuments(searchConditions)
     ]);
-
     return {
       documents: documents,
       total: total,
@@ -180,18 +156,6 @@ const getall2 = async (options) => {
   } catch (error) {
     console.log(error);
   }
-};
-
-
-const getall3 = async () => {
-  try {
-    let documents = await User.find({}, { "user.name": 1, "stats.subscribers": 1 })
-      .sort({
-        "stats.subscribers": -1,
-        "user.name": 1
-      });
-    return documents;
-  } catch (error) { }
 };
 
 const find2 = async (json) => {
@@ -231,47 +195,22 @@ const checkIds = async (ids) => {
   } catch (error) { }
 };
 
-const getNewestDocument = async () => {
+const getRandomChannel = async () => {
   try {
-    const document = await User.findOne({}, { id: 1, _id: 1 }).sort({ created: -1 });
-    if (document) return document;
-    return null;
+    const total = await User.countDocuments();
+    const random = Math.floor(Math.random() * total);
+    return await User.findOne({}, { history: 0 }).skip(random);
   } catch (error) { }
-}
-
-const addGainsIfNotExists = async () => {
-  let addGains = {
-    subscribers: {
-      daily: 0,
-      weekly: 0,
-      monthly: 0,
-      yearly: 0
-    },
-    views: {
-      daily: 0,
-      weekly: 0,
-      monthly: 0,
-      yearly: 0
-    },
-    videos: {
-      daily: 0,
-      weekly: 0,
-      monthly: 0,
-      yearly: 0
-    }
-  };
-  await User.updateMany({ "gains.subscribers": { $exists: false } }, { $set: { "gains": addGains } })
-}
+};
 
 export default {
   add,
   find,
   find2,
-  getall,
+  getallDocuments,
   update,
-  getall2,
+  getall,
   getTotalDocuments,
   checkIds,
-  getall3,
-  addGainsIfNotExists
+  getRandomChannel
 };

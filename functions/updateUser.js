@@ -7,7 +7,7 @@ const updateUser = async (userId, ids, fail) => {
     if (userId) {
         let user = await db.find('id', userId);
         if (user) {
-            let link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics,brandingSettings&id=${userId}`;
+            let link = `https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics,brandingSettings&id=${userId}`;
             if (!fail) {
                 link = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`;
             }
@@ -94,7 +94,7 @@ const updateUser = async (userId, ids, fail) => {
         for (let i = 0; i < groups.length; i++) {
             console.log(`fetched`);
             try {
-                const link = `https://yt.sfmg.repl.co/noKey/channels?part=snippet,statistics,brandingSettings&id=${groups[i].join(',')}`;
+                const link = `https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics,brandingSettings&id=${groups[i].join(',')}`;
                 if (!fail) {
                     const linkWithKey = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i].join(',')}&key=${getKey()}`;
                     const response = await axios.get(linkWithKey);

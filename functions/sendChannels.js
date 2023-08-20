@@ -1,6 +1,6 @@
 import db from './db.js';
 const sendChannels = async (options) => {
-    let response = await db.getall2(options);
+    let response = await db.getall(options);
     response.documents.forEach(channel => {
         if (!channel.gains) {
             channel.gains = {

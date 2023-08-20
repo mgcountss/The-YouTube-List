@@ -81,12 +81,12 @@
             <option value="joined">Joined</option>
             <option value="name">Name</option>
             <option value="country">Country</option>
-            <option value="subscribers24">24 Hour Gain (Subscribers)</option>
-            <option value="views24">24 Hour Gain (Views)</option>
-            <option value="videos24">24 Hour Gain (Videos)</option>
-            <option value="subscribers7">7 Day Gain (Subscribers)</option>
-            <option value="views7">7 Day Gain (Views)</option>
-            <option value="videos7">7 Day Gain (Videos)</option>
+            <option value="subscribers24">Subscribers (24H Gain)</option>
+            <option value="views24">Views (24H Gain)</option>
+            <option value="videos24">Videos (24H Gain)</option>
+            <option value="subscribers7">Subscribers (7D Gain)</option>
+            <option value="views7">Views (7D Gain)</option>
+            <option value="videos7">Videos (7D Gain)</option>
             <option value="name">Name</option>
             <option value="description">Description</option>
         </select>
@@ -102,12 +102,12 @@
             <option value="joined">Joined</option>
             <option value="name">Name</option>
             <option value="country">Country</option>
-            <option value="subscribers24">24 Hour Gain (Subscribers)</option>
-            <option value="views24">24 Hour Gain (Views)</option>
-            <option value="videos24">24 Hour Gain (Videos)</option>
-            <option value="subscribers7">7 Day Gain (Subscribers)</option>
-            <option value="views7">7 Day Gain (Views)</option>
-            <option value="videos7">7 Day Gain (Videos)</option>
+            <option value="subscribers24">Subscribers (24H Gain)</option>
+            <option value="views24">Views (24H Gain)</option>
+            <option value="videos24">Videos (24H Gain)</option>
+            <option value="subscribers7">Subscribers (7D Gain)</option>
+            <option value="views7">Views (7D Gain)</option>
+            <option value="videos7">Videos (7D Gain)</option>
             <option value="name">Name</option>
             <option value="description">Description</option>
         </select>
@@ -118,11 +118,13 @@
         <div class="filters"></div>
         <button onclick="addFilter()" class="addFilter">Add Filter</button>
         <button onclick="search()" class="search">Search</button>
+        <button onclick="randomChannel()" class="search">Random Channel</button>
         <button class="settingsButton" onclick="settings()">Settings</button>
     </div>
     <hr>
     <div>
-        <h3 id="loaded">Loaded From Search: 5/<%= totals.totalChannels.toLocaleString('en-US') %></h3>
+        <h3 id="loaded">Loaded From Search: 5/<%= totals.totalChannels.toLocaleString('en-US') %>
+        </h3>
     </div>
     <hr>
     <center>
@@ -166,14 +168,14 @@
                                 <h5>Country</h5>
                             </div>
                             <div>
-                                <h4 class="country">
+                                <h4 class="joined">
                                     <%=new Date(channel.user.joined).toString().split('GMT')[0]%>
                                 </h4>
                                 <h5>Joined</h5>
                             </div>
                         </div>
                         <hr>
-                        <div class="stats">
+                        <div class="gains">
                             <div>
                                 <h4 class="gain24">
                                     <%=channel.gains.subscribers.daily.toLocaleString("en-US")%>
@@ -210,6 +212,24 @@
                                 </h4>
                                 <h5>Videos (7 Days)</h5>
                             </div>
+                            <div>
+                                <h4 class="gain30" id="subscribers30">
+                                    <%=channel.gains.subscribers.monthly.toLocaleString("en-US")%>
+                                </h4>
+                                <h5>Subscribers (30 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain30" id="views30">
+                                    <%=channel.gains.views.monthly.toLocaleString("en-US")%>
+                                </h4>
+                                <h5>Views (30 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain30" id="videos30">
+                                    <%=channel.gains.videos.monthly.toLocaleString("en-US")%>
+                                </h4>
+                                <h5>Videos (30 Days)</h5>
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -229,7 +249,7 @@
                 </div>
             </center>
             <div id="popup-content" class="popup-content">
-                <input type="text" id="name" placeholder="Name/@Handle/Channel ID"><br>
+                <input type="text" id="name2" placeholder="Name/@Handle/Channel ID"><br>
                 <button class="search2" onclick="searchChannel()">Search</button>
                 <br><br>
                 <hr>
@@ -261,7 +281,8 @@
                 <h3>List Mode Values</h3>
                 <h5>Select what values you would like to see on list mode.</h5>
                 <br>
-                <button onclick="reloadSavedListValues()">Reload Saved Values (This will reload the page)</button><br><hr>
+                <button onclick="reloadSavedListValues()">Reload Saved Values (This will reload the page)</button><br>
+                <hr>
                 <div id="listSelections">
                     <button onclick="addSelection()" class="addSelection">Add Selection</button>
                     <div class="selections"></div>
@@ -272,15 +293,88 @@
     <div id="menu" class="menu">
         <div class="menu2">
             <center>
-                <button id="update" onclick="updateUser()">Update User</button>
-                <br>
-                <br>
-                <h4>Channel ID:</h4>
-                <h3 id="id"></h3>
-                <button id="visit" class="search_button">Visit Channel</button><br>
-                <h3 id="added">Added: </h3>
-                <h3 id="updated">Updated: </h3>
-                <button class="search_button" onclick="closePopup3()">Exit Tab</button><br>
+                <div class="card">
+                    <div class="banner"
+                        style="background-image: url('')" id="banner">
+                        <img src=""
+                            class="logo" alt="logo" id="logo">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="name" id="name"></h3>
+                        <button id="visit" class="search_button">Visit Channel</button>
+                        <button id="update" onclick="updateUser()">Update User</button><br>
+                        <hr>
+                        <div class="stats">
+                            <div>
+                                <h4 class="subscribers" id="subscribers"></h4>
+                                <h5>Subscribers</h5>
+                            </div>
+                            <div>
+                                <h4 class="views" id="views"></h4>
+                                <h5>Views</h5>
+                            </div>
+                            <div>
+                                <h4 class="videos" id="videos"></h4>
+                                <h5>Videos</h5>
+                            </div>
+                        </div>
+                        <div class="misc">
+                            <div>
+                                <h4 class="country" id="country"></h4>
+                                <h5>Country</h5>
+                            </div>
+                            <div>
+                                <h4 class="joined" id="joined"></h4>
+                                <h5>Joined</h5>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="gains">
+                            <div>
+                                <h4 class="gain24" id="subscribers24"></h4>
+                                <h5>Subscribers (24 Hours)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain24" id="views24"></h4>
+                                <h5>Views (24 Hours)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain24" id="videos24"></h4>
+                                <h5>Videos (24 Hours)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain7" id="subscribers7"></h4>
+                                <h5>Subscribers (7 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain7" id="views7"></h4>
+                                <h5>Views (7 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain7" id="videos7"></h4>
+                                <h5>Videos (7 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain30" id="subscribers30"></h4>
+                                <h5>Subscribers (30 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain30" id="views30"></h4>
+                                <h5>Views (30 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain30" id="videos30"></h4>
+                                <h5>Videos (30 Days)</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <textarea class="description" id="description"></textarea>
+                    <h3 id="id"></h3>
+                    <h3 id="added">Added: </h3>
+                    <h3 id="updated">Updated: </h3>
+                    <button class="search_button" onclick="closePopup3()">Exit Tab</button><br>
+                </div>
             </center>
         </div>
     </div>

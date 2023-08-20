@@ -23,7 +23,7 @@ async function getChannels() {
                     end = true;
                 } else {
                     searching = false;
-                    document.getElementById('loaded').innerHTML = "Loaded From Search: " + (data.offset+data.limit).toLocaleString('en-US') + "/" + data.total.toLocaleString('en-US');
+                    document.getElementById('loaded').innerHTML = "Loaded From Search: " + (data.offset + data.limit).toLocaleString('en-US') + "/" + data.total.toLocaleString('en-US');
                     if (localStorage.getItem('mode') == 'list') {
                         data.channels.forEach((channel) => {
                             if (ids.includes(channel.id)) return;
@@ -33,18 +33,22 @@ async function getChannels() {
                             listValues.forEach(value => {
                                 if (value == 'logo') {
                                     tds.push(`<td><img src="${channel.user.logo}" class="logo" alt="${channel.user.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')}'s logo" onerror="imgError('logo', this)"></td>`)
-                                } else if (value == 'name' || value == 'description') {
+                                } else if ((value == 'name') || (value == 'description')) {
                                     tds.push(`<td><h4 class="${value}">${channel.user[value].replace(/</g, '&lt;').replace(/>/g, '&gt;')}</h4></td>`)
                                 } else if (value == 'subscribers' || value == 'views' || value == 'videos') {
                                     tds.push(`<td><h4 class="${value}">${channel.stats[value].toLocaleString("en-US")}</h4></td>`)
                                 } else if (value == 'country') {
                                     tds.push(`<td><h4 class="country">${channel.user.country ? channel.user.country : 'N/A'}</h4></td>`)
                                 } else if (value == 'joined') {
-                                    tds.push(`<td><h4 class="time">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4></td>`)
-                                } else if (value == 'subscribers24' || value == 'views24' || value == 'videos24') {
-                                    tds.push(`<td><h4 class="gain24">${channel.gains[value.split('24')[0]].daily.toLocaleString("en-US")}</h4></td>`)
-                                } else if (value == 'subscribers7' || value == 'views7' || value == 'videos7') {
-                                    tds.push(`<td><h4 class="gain7">${channel.gains[value.split('7')[0]].weekly.toLocaleString("en-US")}</h4></td>`)
+                                    tds.push(`<td><h4 class="joined">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4></td>`)
+                                } else if ((value == 'Subscribers (24H Gain)') || (value == 'Views (24H Gain)') || (value == 'Videos (24H Gain)')) {
+                                    tds.push(`<td><h4 class="gain24">${channel.gains[(value.split(' (24')[0]).toLowerCase()].daily.toLocaleString("en-US")}</h4></td>`)
+                                } else if ((value == 'Subscribers (7D Gain)') || (value == 'Views (7D Gain)') || (value == 'Videos (7D Gain)')) {
+                                    tds.push(`<td><h4 class="gain7">${channel.gains[(value.split(' (7')[0]).toLowerCase()].weekly.toLocaleString("en-US")}</h4></td>`)
+                                } else if ((value == 'Subscribers (30D Gain)') || (value == 'Views (30D Gain)') || (value == 'Videos (30D Gain)')) {
+                                    tds.push(`<td><h4 class="gain30">${channel.gains[(value.split(' (30')[0]).toLowerCase()].monthly.toLocaleString("en-US")}</h4></td>`)
+                                } else {
+                                    alert(value)
                                 }
                             })
                             document.getElementById('table').innerHTML += `<tr onclick="openMenu('${channel.id}')">
@@ -85,12 +89,12 @@ async function getChannels() {
                                 <h5>Country</h5>
                             </div>
                             <div>
-                                <h4 class="country">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4>
+                                <h4 class="joined">${new Date(channel.user.joined).toString().split('GMT')[0]}</h4>
                                 <h5>Joined</h5>
                             </div>
                         </div>
                         <hr>
-                        <div class="stats">
+                        <div class="gains">
                             <div>
                                 <h4 class="gain24">${channel.gains.subscribers.daily.toLocaleString("en-US")}</h4>
                                 <h5>Subscribers (24 Hours)</h5>
@@ -115,6 +119,18 @@ async function getChannels() {
                                 <h4 class="gain7">${channel.gains.videos.weekly.toLocaleString("en-US")}</h4>
                                 <h5>Videos (7 Days)</h5>
                             </div>
+                            <div>
+                                <h4 class="gain30">${channel.gains.subscribers.monthly.toLocaleString("en-US")}</h4>
+                                <h5>Subscribers (30 Days)</h5>
+                                </div>
+                            <div>
+                                <h4 class="gain30">${channel.gains.views.monthly.toLocaleString("en-US")}</h4>
+                                <h5>Views (30 Days)</h5>
+                            </div>
+                            <div>
+                                <h4 class="gain30">${channel.gains.videos.monthly.toLocaleString("en-US")}</h4>
+                                <h5>Videos (30 Days)</h5>
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -137,15 +153,25 @@ function search() {
     channels = [];
     end = false;
     if (localStorage.getItem('mode') == 'list') {
-        document.getElementById('table').innerHTML = `<tr>
-        <th>Logo</th>
-        <th>Name</th>
-        <th>Subscribers</th>
-        <th>Views</th>
-        <th>Videos</th>
-        <th>Country</th>
-        <th>Joined</th>
-    </tr>`;
+        let table = document.getElementById('table');
+        let headers = table.rows[0].cells;
+        listValues = [];
+        for (let q = 0; q < headers.length; q++) {
+            if ((headers[q].innerText == "Subscribers (30D Gain)") || (headers[q].innerText == "Views (30D Gain)") || (headers[q].innerText == "Videos (30D Gain)")) {
+                listValues.push(headers[q].innerText);
+            } else if ((headers[q].innerText == "Subscribers (7D Gain)") || (headers[q].innerText == "Views (7D Gain)") || (headers[q].innerText == "Videos (7D Gain)")) {
+                listValues.push(headers[q].innerText);
+            } else if ((headers[q].innerText == "Subscribers (24H Gain)") || (headers[q].innerText == "Views (24H Gain)") || (headers[q].innerText == "Videos (24H Gain)")) {
+                listValues.push(headers[q].innerText);
+            } else {
+                listValues.push(headers[q].innerText.toLowerCase());
+            }
+        }
+        document.getElementById('channels').innerHTML = `<table class="table" id="table">
+        <tr>
+        ${listValues.map(value => `<th>${value.charAt(0).toUpperCase() + value.slice(1)}</th>`).join('')}
+        </tr>
+        </table>`
     } else {
         document.querySelector('.channels').innerHTML = '';
     }
@@ -159,7 +185,7 @@ function search() {
         let type = filter[q].querySelector('.filterType').value;
         let operator = filter[q].querySelector('.filterOperator').value;
         let value = filter[q].querySelector('.filterValue').value;
-        if (type == 'subscribers' || type == 'views' || type == 'videos' || type == 'subscribers24' || type == 'views24' || type == 'videos24' || type == 'subscribers7' || type == 'views7' || type == 'videos7') {
+        if (type == 'subscribers' || type == 'views' || type == 'videos' || type == 'subscribers24' || type == 'views24' || type == 'videos24' || type == 'subscribers7' || type == 'views7' || type == 'videos7' || type == 'subscribers30' || type == 'views30' || type == 'videos30') {
             value = parseInt(value);
             type = 'stats.' + type;
         } else if (type == 'joined' || type == 'country') {
@@ -167,7 +193,7 @@ function search() {
         } else {
             type = 'gains.' + type;
         }
-        if (type == 'stats.subscribers' || type == 'stats.views' || type == 'stats.videos' || type == 'gains.subscribers24' || type == 'gains.views24' || type == 'gains.videos24' || type == 'user.joined' || type == 'user.country' || type == 'gains.subscribers7' || type == 'gains.views7' || type == 'gains.videos7') {
+        if (type == 'stats.subscribers' || type == 'stats.views' || type == 'stats.videos' || type == 'gains.subscribers24' || type == 'gains.views24' || type == 'gains.videos24' || type == 'user.joined' || type == 'user.country' || type == 'gains.subscribers7' || type == 'gains.views7' || type == 'gains.videos7' || type == 'gains.subscribers30' || type == 'gains.views30' || type == 'gains.videos30') {
             if (operator == '=') {
                 filters[type] = value;
             } else if (operator == '>') {
@@ -208,7 +234,7 @@ function searchChannel(handle, that) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ id: (handle ? handle : document.getElementById('name').value) })
+        body: JSON.stringify({ id: (handle ? handle : document.getElementById('name2').value) })
     })
         .then(res => res.json())
         .then(data => {
@@ -322,7 +348,6 @@ function searchBulk() {
         let bulk = document.getElementById('bulk').value
         bulk = bulk.replace(/\n/g, ',');
         bulk = bulk.split(',');
-        console.log(bulk);
         for (let i = 0; i < bulk.length; i++) {
             bulk[i] = bulk[i].replace(/ /g, '');
             if (!bulk[i].startsWith('UC')) {
@@ -401,11 +426,31 @@ function changeMode(a) {
             ids = [];
             channels = [];
             document.querySelector('.channels').style.gridTemplateColumns = '1fr';
+            for (let q = 0; q < listValues.length; q++) {
+                let value = listValues[q];
+                if ((value == "subscribers30") || (value == "views30") || (value == "videos30")) {
+                    value = value.slice(0, -1) + " (30D Gain)"
+                }
+                if ((value == "subscribers7") || (value == "views7") || (value == "videos7")) {
+                    value = value.slice(0, -1) + " (7D Gain)"
+                }
+                if ((value == "subscribers24") || (value == "views24") || (value == "videos24")) {
+                    value = value.slice(0, -2) + " (24H Gain)"
+                }
+                listValues[q] = value;
+            }
             document.getElementById('channels').innerHTML = `<table class="table" id="table">
             <tr>
             ${listValues.map(value => `<th>${value.charAt(0).toUpperCase() + value.slice(1)}</th>`).join('')}
             </tr>
             </table>`
+            for (let q = 0; q < listValues.length; q++) {
+                let value = listValues[q];
+                if ((value == "subscribers (7D Gain)") || (value == "views (7D Gain)") || (value == "videos (7D Gain)") || (value == "subscribers (24H Gain)") || (value == "views (24H Gain)") || (value == "videos (24H Gain)") || (value == "subscribers (30D Gain)") || (value == "views (30D Gain)") || (value == "videos (30D Gain)")) {
+                    value = value.charAt(0).toUpperCase() + value.slice(1);
+                }
+                listValues[q] = value;
+            }
             getChannels();
         } else {
             document.getElementById('mode').innerHTML = 'List View';
@@ -428,13 +473,33 @@ function changeMode(a) {
 }
 
 let currentID = '';
-function openMenu(id) {
+function openMenu(id, channel) {
     currentID = id;
     document.getElementById('menu').style.display = 'flex';
-    let channel = channels.find(channel => channel.id == id);
-    document.getElementById('id').innerHTML = channel.id;
-    document.getElementById('added').innerHTML = "Added: "+new Date(channel.created).toString().split('GMT')[0];
-    document.getElementById('updated').innerHTML = "Updated: "+new Date(channel.updated).toString().split('GMT')[0];
+    if (!channel) {
+        channel = channels.find(channel => channel.id == id);
+    }
+    document.getElementById('id').innerHTML = "Channel ID: <input type='text' value='" + channel.id + "' readonly style='width: 40%'>";
+    document.getElementById('added').innerHTML = "Added: " + new Date(channel.created).toString().split('GMT')[0];
+    document.getElementById('updated').innerHTML = "Updated: " + new Date(channel.updated).toString().split('GMT')[0];
+    document.getElementById('logo').src = channel.user.logo;
+    document.getElementById('banner').style.backgroundImage = `url('${channel.user.banner}')`;
+    document.getElementById('name').innerHTML = channel.user.name;
+    document.getElementById('description').innerHTML = channel.user.description;
+    document.getElementById('subscribers').innerHTML = channel.stats.subscribers.toLocaleString("en-US");
+    document.getElementById('views').innerHTML = channel.stats.views.toLocaleString("en-US");
+    document.getElementById('videos').innerHTML = channel.stats.videos.toLocaleString("en-US");
+    document.getElementById('country').innerHTML = channel.user.country ? channel.user.country : 'N/A';
+    document.getElementById('joined').innerHTML = new Date(channel.user.joined).toString().split('GMT')[0];
+    document.getElementById('subscribers24').innerHTML = channel.gains.subscribers.daily.toLocaleString("en-US");
+    document.getElementById('views24').innerHTML = channel.gains.views.daily.toLocaleString("en-US");
+    document.getElementById('videos24').innerHTML = channel.gains.videos.daily.toLocaleString("en-US");
+    document.getElementById('subscribers7').innerHTML = channel.gains.subscribers.weekly.toLocaleString("en-US");
+    document.getElementById('views7').innerHTML = channel.gains.views.weekly.toLocaleString("en-US");
+    document.getElementById('videos7').innerHTML = channel.gains.videos.weekly.toLocaleString("en-US");
+    document.getElementById('subscribers30').innerHTML = channel.gains.subscribers.monthly.toLocaleString("en-US");
+    document.getElementById('views30').innerHTML = channel.gains.views.monthly.toLocaleString("en-US");
+    document.getElementById('videos30').innerHTML = channel.gains.videos.monthly.toLocaleString("en-US");
     document.getElementById('visit').onclick = () => {
         window.open(`https://youtube.com/channel/${channel.id}`);
     }
@@ -473,6 +538,9 @@ function addFilter() {
     <option value="subscribers7">Subscribers (7D Gain)</option>
     <option value="views7">Views (7D Gain)</option>
     <option value="videos7">Videos (7D Gain)</option>
+    <option value="subscribers30">Subscribers (30D Gain)</option>
+    <option value="views30">Views (30D Gain)</option>
+    <option value="videos30">Videos (30D Gain)</option>
 </select>
 <select class="filterOperator">
     <option value="=">=</option>
@@ -504,6 +572,9 @@ function addSelection() {
     <option value="subscribers7">Subscribers (7D Gain)</option>
     <option value="views7">Views (7D Gain)</option>
     <option value="videos7">Videos (7D Gain)</option>
+    <option value="subscribers30">Subscribers (30D Gain)</option>
+    <option value="views30">Views (30D Gain)</option>
+    <option value="videos30">Videos (30D Gain)</option>
 </select>
 <button class="removeFilter" onclick="removeFilter(this)">X</button>`
     document.querySelector('.selections').appendChild(selection);
@@ -557,11 +628,26 @@ function checkSavedListValues() {
                 <option value="subscribers7" ${value == 'subscribers7' ? 'selected' : ''}>Subscribers (7D Gain)</option>
                 <option value="views7" ${value == 'views7' ? 'selected' : ''}>Views (7D Gain)</option>
                 <option value="videos7" ${value == 'videos7' ? 'selected' : ''}>Videos (7D Gain)</option>
+                <option value="subscribers30" ${value == 'subscribers30' ? 'selected' : ''}>Subscribers (30D Gain)</option>
+                <option value="views30" ${value == 'views30' ? 'selected' : ''}>Views (30D Gain)</option>
+                <option value="videos30" ${value == 'videos30' ? 'selected' : ''}>Videos (30D Gain)</option>
             </select>
             <button class="removeFilter" onclick="removeFilter(this)">X</button>
         </div>`
         })
     }
+}
+
+function randomChannel() {
+    fetch('/api/random')
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.message);
+            } else {
+                openMenu(data.id, data);
+            }
+        }).catch(err => console.error(err));
 }
 
 changeTheme('init')

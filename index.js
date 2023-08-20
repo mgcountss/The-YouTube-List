@@ -22,30 +22,13 @@ let cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'd
 let totalCache = await db.getTotalDocuments();
 app.get('/', async (req, res) => {
     let ids = cache.channels.map(user => user.id);
-    console.log(ids);
-    console.log(cache.total, cache.limit, cache.offset);
     res.render('index', { users: cache.channels, totals: totalCache, ids: ids, limit: cache.limit, total: cache.total, offset: cache.offset });
     cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
 });
-
 app.post('/api/totals', async (req, res) => {
     res.send(totalCache);
     totalCache = await db.getTotalDocuments();
 });
-/*let cache3 = []
-app.get('/bar', async (req, res) => {
-    if (!cache3) {
-        res.send('No data yet');
-    }
-    res.render('bar', { data: cache3 });
-    cache3 = await db.getall3();
-    for (let q = 0; q < cache3.length; q++) {
-        cache3[q] = {
-            value: cache3[q].stats.subscribers,
-            name: cache3[q].user.name
-        }
-    }
-});*/
 app.get('/favicons/*', (req, res) => {
     res.sendFile(__dirname + req.path);
 });
@@ -93,6 +76,10 @@ app.post('/api/update', async (req, res) => {
     }
 });
 
+app.get('/api/random', async (req, res) => {
+    res.send(await db.getRandomChannel());  
+})
+
 app.post('/api/channels', async (req, res) => {
     let sort1 = req.body.sort1 ? req.body.sort1 : 'subscribers';
     let sort2 = req.body.sort2 ? req.body.sort2 : 'name';
@@ -138,14 +125,11 @@ setInterval(() => {
     if (new Date().getHours() != lastHour) {
         lastHour = new Date().getHours();
         if (lastHour === 0 || lastHour === 12) {
+            console.log('Updating all channels');
             fork('./updateAll.js', [process.env.MONGO_URL, process.env.MONGO_USER, process.env.MONGO_PASSWORD, process.env.YOUTUBE_API_KEYS]);
         }
     }
 }, 60000);
-
-db.addGainsIfNotExists();
-fork('./updateAll.js', [process.env.MONGO_URL, process.env.MONGO_USER, process.env.MONGO_PASSWORD, process.env.YOUTUBE_API_KEYS]);
-
 
 app.listen(3002, () => {
     console.log('Server running on port 3002');
