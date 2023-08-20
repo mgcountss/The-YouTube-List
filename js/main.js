@@ -48,7 +48,7 @@ async function getChannels() {
                                 } else if ((value == 'Subscribers (30D Gain)') || (value == 'Views (30D Gain)') || (value == 'Videos (30D Gain)')) {
                                     tds.push(`<td><h4 class="gain30">${channel.gains[(value.split(' (30')[0]).toLowerCase()].monthly.toLocaleString("en-US")}</h4></td>`)
                                 } else {
-                                    alert(value)
+                                    console.log(value)
                                 }
                             })
                             document.getElementById('table').innerHTML += `<tr onclick="openMenu('${channel.id}')">
@@ -429,7 +429,7 @@ function changeMode(a) {
             for (let q = 0; q < listValues.length; q++) {
                 let value = listValues[q];
                 if ((value == "subscribers30") || (value == "views30") || (value == "videos30")) {
-                    value = value.slice(0, -1) + " (30D Gain)"
+                    value = value.slice(0, -2) + " (30D Gain)"
                 }
                 if ((value == "subscribers7") || (value == "views7") || (value == "videos7")) {
                     value = value.slice(0, -1) + " (7D Gain)"
