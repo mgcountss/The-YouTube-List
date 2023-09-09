@@ -4,7 +4,7 @@ import getKey from './getKey.js';
 import searchChannel from './searchChannel.js';
 import updateUser from './updateUser.js';
 
-const addUser = async (userId, ids, failed) => {
+const addUser = async (userId, ids, failed, failed2) => {
     if (userId) {
         if ((!userId.startsWith('@')) && (!userId.startsWith('UC') || (userId.length !== 24))) {
             let r = await searchChannel(userId);
@@ -40,9 +40,12 @@ const addUser = async (userId, ids, failed) => {
                     message: 'User already exists'
                 };
             }
-            let link = `hhttps://yt.lemnoslife.com/noKey/channels?part=snippet,statistics,brandingSettings&id=${userId}`;
+            let link = `https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics,brandingSettings&id=${userId}`;
             if (!failed) {
                 link = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`;
+            }
+            if (failed2) {
+                link = `https://axern.space/api/get?platform=youtube&type=channel&id=${userId}`;
             }
             try {
                 const response = await axios.get(link);
@@ -129,7 +132,11 @@ const addUser = async (userId, ids, failed) => {
                 }
             } catch (error) {
                 if (error.response && error.response.status === 403) {
-                    addUser(userId, ids, true);
+                    if (failed) {
+                        addUser(userId, ids, false, true);
+                    } else {
+                        addUser(userId, ids, true);
+                    }
                     return {
                         error: false,
                         message: 'User added successfully',

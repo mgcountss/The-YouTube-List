@@ -3,13 +3,16 @@ import db from './db.js';
 import axios from 'axios';
 import getKey from './getKey.js';
 
-const updateUser = async (userId, ids, fail) => {
+const updateUser = async (userId, ids, failed) => {
     if (userId) {
         let user = await db.find('id', userId);
         if (user) {
             let link = `https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics,brandingSettings&id=${userId}`;
-            if (!fail) {
+            if (!failed) {
                 link = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${userId}&key=${getKey()}`;
+            }
+            if (failed2) {
+                link = `https://axern.space/api/get?platform=youtube&type=channel&id=${userId}`;
             }
             try {
                 const response = await axios.get(link);
@@ -94,11 +97,11 @@ const updateUser = async (userId, ids, fail) => {
         for (let i = 0; i < groups.length; i++) {
             console.log(`fetched`);
             try {
-                const link = `https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics,brandingSettings&id=${groups[i].join(',')}`;
-                if (!fail) {
-                    const linkWithKey = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i].join(',')}&key=${getKey()}`;
-                    const response = await axios.get(linkWithKey);
-
+                let link = `https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics,brandingSettings&id=${groups[i]}`;
+                if (!failed) {
+                    link = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${groups[i]}&key=${getKey()}`;
+                }
+                const response = await axios.get(link);
                     if (!response.data.error) {
                         if (response.data.items && response.data.items.length > 0) {
                             for (const item of response.data.items) {
@@ -181,10 +184,6 @@ const updateUser = async (userId, ids, fail) => {
                     } else {
                         console.log('as');
                     }
-                } else if (response.data.error.code == 403) {
-                    console.log('e');
-                    await updateUser(null, groups[i]);
-                }
             } catch (error) {
                 if (error.response?.status == 403) {
                     await updateUser(null, groups[i]);

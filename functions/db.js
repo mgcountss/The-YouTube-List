@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
-let caches = {};
 const MONGO_URL = process.env.MONGO_URL || process.argv[2];
 const MONGO_USER = process.env.MONGO_USER || process.argv[3];
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD || process.argv[4];
