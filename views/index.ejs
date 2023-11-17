@@ -37,6 +37,7 @@
         <h1 class="title">The YouTube List</h1>
         <p>Scroll down the list to reveal more channels!</p>
         <button class="add" onclick="addChannel()">Add Channel!</button><br>
+        <button onclick="randomChannel()" class="random">Random Channel</button><br>
         <button onclick="window.location.href = 'https://discord.gg/8PkS22yDJM'" class="discord">Join the
             Discord!</button>
         <button onclick="window.location.href = 'https://github.com/mgcountss/The-YouTube-List'">Contribute on
@@ -84,9 +85,9 @@
             <option value="subscribers24">Subscribers (24H Gain)</option>
             <option value="views24">Views (24H Gain)</option>
             <option value="videos24">Videos (24H Gain)</option>
-            <option value="subscribers7">Subscribers (7D Gain)</option>
+            <!--<option value="subscribers7">Subscribers (7D Gain)</option>
             <option value="views7">Views (7D Gain)</option>
-            <option value="videos7">Videos (7D Gain)</option>
+            <option value="videos7">Videos (7D Gain)</option>-->
             <option value="name">Name</option>
             <option value="description">Description</option>
         </select>
@@ -105,9 +106,9 @@
             <option value="subscribers24">Subscribers (24H Gain)</option>
             <option value="views24">Views (24H Gain)</option>
             <option value="videos24">Videos (24H Gain)</option>
-            <option value="subscribers7">Subscribers (7D Gain)</option>
+            <!--<option value="subscribers7">Subscribers (7D Gain)</option>
             <option value="views7">Views (7D Gain)</option>
-            <option value="videos7">Videos (7D Gain)</option>
+            <option value="videos7">Videos (7D Gain)</option>-->
             <option value="name">Name</option>
             <option value="description">Description</option>
         </select>
@@ -118,7 +119,6 @@
         <div class="filters"></div>
         <button onclick="addFilter()" class="addFilter">Add Filter</button>
         <button onclick="search()" class="search">Search</button>
-        <button onclick="randomChannel()" class="search">Random Channel</button>
         <button class="settingsButton" onclick="settings()">Settings</button>
     </div>
     <hr>
@@ -194,6 +194,7 @@
                                 </h4>
                                 <h5>Videos (24 Hours)</h5>
                             </div>
+                            <!--
                             <div>
                                 <h4 class="gain7">
                                     <%=channel.gains.subscribers.weekly.toLocaleString("en-US")%>
@@ -229,7 +230,7 @@
                                     <%=channel.gains.videos.monthly.toLocaleString("en-US")%>
                                 </h4>
                                 <h5>Videos (30 Days)</h5>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                     <hr>
@@ -294,10 +295,8 @@
         <div class="menu2">
             <center>
                 <div class="card">
-                    <div class="banner"
-                        style="background-image: url('')" id="banner">
-                        <img src=""
-                            class="logo" alt="logo" id="logo">
+                    <div class="banner" style="background-image: url('')" id="banner">
+                        <img src="" class="logo" alt="logo" id="logo">
                     </div>
                     <div class="card-body">
                         <h3 class="name" id="name"></h3>
@@ -342,6 +341,7 @@
                                 <h4 class="gain24" id="videos24"></h4>
                                 <h5>Videos (24 Hours)</h5>
                             </div>
+                            <!--
                             <div>
                                 <h4 class="gain7" id="subscribers7"></h4>
                                 <h5>Subscribers (7 Days)</h5>
@@ -365,7 +365,7 @@
                             <div>
                                 <h4 class="gain30" id="videos30"></h4>
                                 <h5>Videos (30 Days)</h5>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                     <hr>

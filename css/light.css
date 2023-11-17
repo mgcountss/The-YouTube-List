@@ -395,3 +395,8 @@ table {
     border: solid 4px #FFF;
     overflow: scroll;
 }
+
+.random {
+    font-size: 1.5vw;
+    margin-bottom: 0.5vw;
+}

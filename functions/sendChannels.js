@@ -24,6 +24,28 @@ const sendChannels = async (options) => {
                 }
             }
         }
+        channel.stats = {
+            subscribers: channel.subscribers,
+            views: channel.views,
+            videos: channel.videos
+        }
+        channel.user = {
+            name: channel.name,
+            description: channel.description,
+            logo: channel.logo,
+            banner: channel.banner,
+            country: channel.country,
+            joined: channel.joined
+        }
+        delete channel.subscribers;
+        delete channel.views;
+        delete channel.videos;
+        delete channel.name;
+        delete channel.description;
+        delete channel.logo;
+        delete channel.banner;
+        delete channel.country;
+        delete channel.joined;
     })
     return {
         channels: response.documents,

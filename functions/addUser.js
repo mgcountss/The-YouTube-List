@@ -9,7 +9,7 @@ const addUser = async (userId, ids, failed, failed2) => {
         if ((!userId.startsWith('@')) && (!userId.startsWith('UC') || (userId.length !== 24))) {
             let r = await searchChannel(userId);
             return r;
-        } else if (await db.find('id', userId)) {
+        } else if (await db.find(userId)) {
             updateUser(userId);
             return {
                 error: true,
@@ -34,7 +34,7 @@ const addUser = async (userId, ids, failed, failed2) => {
                     };
                 }
             }
-            if (await db.find('id', userId)) {
+            if (await db.find(userId)) {
                 return {
                     error: true,
                     message: 'User already exists'
@@ -70,26 +70,23 @@ const addUser = async (userId, ids, failed, failed2) => {
                     };
                 } else {
                     const data = response.data.items[0];
-                    const dateString = new Date().toString().split(' ').slice(0, 4).join(' ');
+                    const dateString = new Date().toString().split(' ').slice(0, 4).join('_');
+                    let country = data.brandingSettings?.channel?.country;
+                    if (!country) {
+                        country = "";
+                    }
                     db.add({
                         id: data.id,
                         created: Date.now(),
                         updated: Date.now(),
-                        deleted: {
-                            deleted: false,
-                            date: null
-                        },
+                        deleted: 0,
                         user: {
                             name: data.snippet.title,
                             logo: data.snippet.thumbnails.default.url,
                             banner: data.brandingSettings.image ? data.brandingSettings.image.bannerExternalUrl : data.snippet.thumbnails.default.url,
-                            country: data.brandingSettings?.channel?.country,
-                            joined: data.snippet.publishedAt,
-                            description: data.snippet.description,
-                            deleted: {
-                                deleted: false,
-                                date: null
-                            }
+                            country: country,
+                            joined: new Date(data.snippet.publishedAt).getTime(),
+                            description: data.snippet.description
                         },
                         stats: {
                             views: parseInt(data.statistics.viewCount ? data.statistics.viewCount : 0),
@@ -102,26 +99,6 @@ const addUser = async (userId, ids, failed, failed2) => {
                                 subscribers: parseInt(data.statistics.subscriberCount ? data.statistics.subscriberCount : 0),
                                 videos: parseInt(data.statistics.videoCount ? data.statistics.videoCount : 0),
                                 name: data.snippet.title
-                            }
-                        },
-                        gains: {
-                            subscribers: {
-                                daily: 0,
-                                weekly: 0,
-                                monthly: 0,
-                                yearly: 0
-                            },
-                            views: {
-                                daily: 0,
-                                weekly: 0,
-                                monthly: 0,
-                                yearly: 0
-                            },
-                            videos: {
-                                daily: 0,
-                                weekly: 0,
-                                monthly: 0,
-                                yearly: 0
                             }
                         }
                     });
@@ -152,7 +129,7 @@ const addUser = async (userId, ids, failed, failed2) => {
         }
     } else {
         let groups = [];
-        ids = await db.checkIds(ids);
+        ids = await db.removeDuplicates(ids, true);
         for (let i = 0; i < ids.length; i += 50) {
             groups.push(ids.slice(i, i + 50));
         }
@@ -183,29 +160,26 @@ const addUser = async (userId, ids, failed, failed2) => {
                 } else {
                     for (let i = 0; i < response.data.items.length; i++) {
                         const data = response.data.items[i];
-                        if (await db.find('id', data.id)) {
+                        if (await db.find(data.id)) {
                             updateUser(data.id);
                         } else {
-                            const dateString = new Date().toString().split(' ').slice(0, 4).join(' ');
+                            const dateString = new Date().toString().split(' ').slice(0, 4).join('_');
+                            let country = data.brandingSettings?.channel?.country;
+                            if (!country) {
+                                country = "";
+                            }
                             db.add({
                                 id: data.id,
                                 created: Date.now(),
                                 updated: Date.now(),
-                                deleted: {
-                                    deleted: false,
-                                    date: null
-                                },
+                                deleted: 0,
                                 user: {
                                     name: data.snippet.title,
                                     logo: data.snippet.thumbnails.default.url,
                                     banner: data.brandingSettings.image ? data.brandingSettings.image.bannerExternalUrl : data.snippet.thumbnails.default.url,
-                                    country: data.brandingSettings?.channel?.country,
-                                    joined: data.snippet.publishedAt,
-                                    description: data.snippet.description,
-                                    deleted: {
-                                        deleted: false,
-                                        date: null
-                                    }
+                                    country: country,
+                                    joined: new Date(data.snippet.publishedAt).getTime(),
+                                    description: data.snippet.description
                                 },
                                 stats: {
                                     views: parseInt(data.statistics.viewCount ? data.statistics.viewCount : 0),
@@ -218,26 +192,6 @@ const addUser = async (userId, ids, failed, failed2) => {
                                         subscribers: parseInt(data.statistics.subscriberCount ? data.statistics.subscriberCount : 0),
                                         videos: parseInt(data.statistics.videoCount ? data.statistics.videoCount : 0),
                                         name: data.snippet.title
-                                    }
-                                },
-                                gains: {
-                                    subscribers: {
-                                        daily: 0,
-                                        weekly: 0,
-                                        monthly: 0,
-                                        yearly: 0
-                                    },
-                                    views: {
-                                        daily: 0,
-                                        weekly: 0,
-                                        monthly: 0,
-                                        yearly: 0
-                                    },
-                                    videos: {
-                                        daily: 0,
-                                        weekly: 0,
-                                        monthly: 0,
-                                        yearly: 0
                                     }
                                 }
                             });

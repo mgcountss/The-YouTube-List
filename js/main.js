@@ -5,7 +5,7 @@ let sort1 = 'subscribers';
 let sort2 = 'subscribers';
 let order1 = 'desc';
 let order2 = 'desc';
-let filters = {};
+let filters = [];
 let listValues = ['logo', 'name', 'subscribers', 'views', 'videos', 'country', 'joined'];
 async function getChannels() {
     fetch('/api/channels', {
@@ -19,7 +19,7 @@ async function getChannels() {
         .then(data => {
             document.getElementById('loader').style.display = "none";
             if (!data.error) {
-                if (data.length == 0) {
+                if (data.channels.length == 0) {
                     end = true;
                 } else {
                     searching = false;
@@ -107,35 +107,35 @@ async function getChannels() {
                                 <h4 class="gain24">${channel.gains.videos.daily.toLocaleString("en-US")}</h4>
                                 <h5>Videos (24 Hours)</h5>
                             </div>
-                            <div>
-                                <h4 class="gain7">${channel.gains.subscribers.weekly.toLocaleString("en-US")}</h4>
-                                <h5>Subscribers (7 Days)</h5>
-                            </div>
-                            <div>
-                                <h4 class="gain7">${channel.gains.views.weekly.toLocaleString("en-US")}</h4>
-                                <h5>Views (7 Days)</h5>
-                            </div>
-                            <div>
-                                <h4 class="gain7">${channel.gains.videos.weekly.toLocaleString("en-US")}</h4>
-                                <h5>Videos (7 Days)</h5>
-                            </div>
-                            <div>
-                                <h4 class="gain30">${channel.gains.subscribers.monthly.toLocaleString("en-US")}</h4>
-                                <h5>Subscribers (30 Days)</h5>
-                                </div>
-                            <div>
-                                <h4 class="gain30">${channel.gains.views.monthly.toLocaleString("en-US")}</h4>
-                                <h5>Views (30 Days)</h5>
-                            </div>
-                            <div>
-                                <h4 class="gain30">${channel.gains.videos.monthly.toLocaleString("en-US")}</h4>
-                                <h5>Videos (30 Days)</h5>
-                            </div>
                         </div>
                     </div>
                     <hr>
-                    <textarea class="description">${channel.user.description}</textarea>
-                </div>`;
+                    <textarea class="description">${channel.user.description}</textarea>`
+                            /*<div>
+                                        <h4 class="gain7">${channel.gains.subscribers.weekly.toLocaleString("en-US")}</h4>
+                                        <h5>Subscribers (7 Days)</h5>
+                                    </div>
+                                    <div>
+                                        <h4 class="gain7">${channel.gains.views.weekly.toLocaleString("en-US")}</h4>
+                                        <h5>Views (7 Days)</h5>
+                                    </div>
+                                    <div>
+                                        <h4 class="gain7">${channel.gains.videos.weekly.toLocaleString("en-US")}</h4>
+                                        <h5>Videos (7 Days)</h5>
+                                    </div>
+                                    <div>
+                                        <h4 class="gain30">${channel.gains.subscribers.monthly.toLocaleString("en-US")}</h4>
+                                        <h5>Subscribers (30 Days)</h5>
+                                        </div>
+                                    <div>
+                                        <h4 class="gain30">${channel.gains.views.monthly.toLocaleString("en-US")}</h4>
+                                        <h5>Views (30 Days)</h5>
+                                    </div>
+                                    <div>
+                                        <h4 class="gain30">${channel.gains.videos.monthly.toLocaleString("en-US")}</h4>
+                                        <h5>Videos (30 Days)</h5>
+                                    </div>
+                                </div>*/
                         });
                     }
                     if (document.getElementById('loadMore')) {
@@ -179,34 +179,22 @@ function search() {
     sort2 = document.getElementById('sort2').value;
     order1 = document.getElementById('order1').value;
     order2 = document.getElementById('order2').value;
-    filters = {};
+    filters = [];
     let filter = document.querySelectorAll('.filter');
     for (let q = 0; q < filter.length; q++) {
         let type = filter[q].querySelector('.filterType').value;
         let operator = filter[q].querySelector('.filterOperator').value;
         let value = filter[q].querySelector('.filterValue').value;
-        if (type == 'subscribers' || type == 'views' || type == 'videos' || type == 'subscribers24' || type == 'views24' || type == 'videos24' || type == 'subscribers7' || type == 'views7' || type == 'videos7' || type == 'subscribers30' || type == 'views30' || type == 'videos30') {
-            value = parseInt(value);
-            type = 'stats.' + type;
-        } else if (type == 'joined' || type == 'country') {
-            type = 'user.' + type;
-        } else {
-            type = 'gains.' + type;
-        }
-        if (type == 'stats.subscribers' || type == 'stats.views' || type == 'stats.videos' || type == 'gains.subscribers24' || type == 'gains.views24' || type == 'gains.videos24' || type == 'user.joined' || type == 'user.country' || type == 'gains.subscribers7' || type == 'gains.views7' || type == 'gains.videos7' || type == 'gains.subscribers30' || type == 'gains.views30' || type == 'gains.videos30') {
-            if (operator == '=') {
-                filters[type] = value;
-            } else if (operator == '>') {
-                filters[type] = { $gt: value };
-            } else if (operator == '<') {
-                filters[type] = { $lt: value };
-            } else if (operator == '>=') {
-                filters[type] = { $gte: value };
-            } else if (operator == '<=') {
-                filters[type] = { $lte: value };
-            }
-        } else if (type == 'country') {
-            filters[type] = value;
+        if (operator == '=') {
+            filters.push(type + " " + operator + " " + value);
+        } else if (operator == '>') {
+            filters[type] = { $gt: value };
+        } else if (operator == '<') {
+            filters[type] = { $lt: value };
+        } else if (operator == '>=') {
+            filters[type] = { $gte: value };
+        } else if (operator == '<=') {
+            filters[type] = { $lte: value };
         }
     }
     document.getElementById('loader').style.display = "block";
@@ -255,6 +243,7 @@ function searchChannel(handle, that) {
             } else {
                 if (that) {
                     that.innerHTML = 'Added';
+                    that.disabled = true;
                 }
                 alert(data.message);
             }
