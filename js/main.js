@@ -483,12 +483,12 @@ function openMenu(id, channel) {
     document.getElementById('subscribers24').innerHTML = channel.gains.subscribers.daily.toLocaleString("en-US");
     document.getElementById('views24').innerHTML = channel.gains.views.daily.toLocaleString("en-US");
     document.getElementById('videos24').innerHTML = channel.gains.videos.daily.toLocaleString("en-US");
-    document.getElementById('subscribers7').innerHTML = channel.gains.subscribers.weekly.toLocaleString("en-US");
-    document.getElementById('views7').innerHTML = channel.gains.views.weekly.toLocaleString("en-US");
-    document.getElementById('videos7').innerHTML = channel.gains.videos.weekly.toLocaleString("en-US");
-    document.getElementById('subscribers30').innerHTML = channel.gains.subscribers.monthly.toLocaleString("en-US");
-    document.getElementById('views30').innerHTML = channel.gains.views.monthly.toLocaleString("en-US");
-    document.getElementById('videos30').innerHTML = channel.gains.videos.monthly.toLocaleString("en-US");
+    //document.getElementById('subscribers7').innerHTML = channel.gains.subscribers.weekly.toLocaleString("en-US");
+    //document.getElementById('views7').innerHTML = channel.gains.views.weekly.toLocaleString("en-US");
+    //document.getElementById('videos7').innerHTML = channel.gains.videos.weekly.toLocaleString("en-US");
+    //document.getElementById('subscribers30').innerHTML = channel.gains.subscribers.monthly.toLocaleString("en-US");
+    //document.getElementById('views30').innerHTML = channel.gains.views.monthly.toLocaleString("en-US");
+    //document.getElementById('videos30').innerHTML = channel.gains.videos.monthly.toLocaleString("en-US");
     document.getElementById('visit').onclick = () => {
         window.open(`https://youtube.com/channel/${channel.id}`);
     }
