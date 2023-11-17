@@ -171,7 +171,7 @@ setInterval(() => {
 setInterval(async () => {
     totals = await db.initalLoad();
     fs.writeFileSync('./caches/totals.json', JSON.stringify(totals));
-}, 60 * 60 * 1000);
+}, 30000);
 
 app.listen(3002, () => {
     console.log('Server running on port 3002');
