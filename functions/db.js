@@ -135,9 +135,13 @@ const add = async (json) => {
 const findMultiple = async (ids) => {
   try {
     const connection = await pool.getConnection();
-    const [rows] = await connection.execute(`SELECT id FROM users WHERE id IN (?)`, [ids]);
-    connection.release();
-    return rows;
+    if (ids.length > 0) {
+      const [rows] = await connection.execute(`SELECT id FROM users WHERE id IN (?)`, [ids]);
+      connection.release();
+      return rows;
+    } else {
+      return [];
+    }
   } catch (error) {
     console.log(error);
   }
@@ -156,6 +160,7 @@ const find = async (id) => {
 
 const removeDuplicates = async (ids, remove) => {
   try {
+    if (ids.length === 0) return ids;
     const connection = await pool.getConnection();
     const [rows] = await connection.execute(`SELECT id FROM users WHERE id IN (${ids.map(() => '?').join(',')})`, ids);
     connection.release();
