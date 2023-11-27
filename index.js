@@ -19,6 +19,11 @@ app.use(bodyParser({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+if (!fs.existsSync('./caches')) {
+    fs.mkdirSync('./caches');
+    fs.writeFileSync('./caches/index.json', JSON.stringify({ channels: [], limit: 5, total: 0, offset: 0 }));
+    fs.writeFileSync('./caches/totals.json', JSON.stringify({ channels: 0, subscribers: 0, views: 0, videos: 0 }));
+}
 let cache = JSON.parse(fs.readFileSync('./caches/index.json'));
 let totals = JSON.parse(fs.readFileSync('./caches/totals.json'));
 
