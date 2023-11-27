@@ -1,0 +1,20 @@
+name: deploy
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /home/list
+    steps:
+      - name: Pull
+        run: git pull origin main
+      - name: Install
+        run: npm install
+      - name: Restart
+        run: pm2 reload all
