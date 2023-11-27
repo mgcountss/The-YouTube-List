@@ -4,5 +4,4 @@ package-lock.json
 apikeytester.js
 /functions/migrate.js
 db.json
-/.github/
 /caches/
