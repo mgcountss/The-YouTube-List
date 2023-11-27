@@ -60,9 +60,21 @@ const initalLoad = async () => {
   return data;
 };
 
+const sortMap = {
+  subscribers24: "gains.subscribers.daily",
+  subscribers7: "gains.subscribers.weekly",
+  subscribers30: "gains.subscribers.monthly",
+  views24: "gains.views.daily",
+  views7: "gains.views.weekly",
+  views30: "gains.views.monthly",
+  videos24: "gains.videos.daily",
+  videos7: "gains.videos.weekly",
+  videos30: "gains.videos.monthly"
+};
+
 const getall = async (options) => {
   let currentChannels = {};
-  if (search) {
+  if (options.search) {
     if (options.search.length == 24 && options.search.startsWith('UC')) {
       let channel = await find(options.search);
       if (channel) {
