@@ -2,6 +2,5 @@
 package-lock.json
 .env
 apikeytester.js
-/functions/migrate.js
 db.json
 /caches/
