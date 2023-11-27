@@ -13,7 +13,7 @@ jobs:
         working-directory: /home/list
     steps:
       - name: Pull
-        run: git pull origin main
+        run: sudo git pull origin main
       - name: Install
         run: npm install
       - name: Restart
