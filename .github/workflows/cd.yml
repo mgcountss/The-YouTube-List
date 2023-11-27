@@ -17,4 +17,4 @@ jobs:
       - name: Install
         run: npm install
       - name: Restart
-        run: pm2 reload all
+        run: sudo pm2 reload all
