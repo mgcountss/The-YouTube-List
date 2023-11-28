@@ -185,5 +185,5 @@ fs.writeFileSync('./caches/totals.json', JSON.stringify(totals));
 fs.writeFileSync('./caches/index.json', JSON.stringify(cache));
 
 setTimeout(() => {
-    //fork('./updateAll.js', [process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASS, process.env.DATABASE, process.env.YOUTUBE_API_KEYS]);
+    fork('./updateAll.js', [process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASS, process.env.DATABASE, process.env.YOUTUBE_API_KEYS]);
 }, 1000);
