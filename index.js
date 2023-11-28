@@ -30,7 +30,7 @@ let totals = JSON.parse(fs.readFileSync('./caches/totals.json'));
 app.get('/', async (req, res) => {
     let ids = cache.channels.map(user => user.id);
     res.render('index', { users: cache.channels, ids: ids, limit: cache.limit, total: cache.total, offset: cache.offset, totals: totals });
-    cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
+    cache = await sendChannels({ sort: 'stats.subscribers', order: 'desc', limit: 5, offset: 0, search: '' })
 });
 app.post('/api/totals', async (req, res) => {
     res.send(totals);
@@ -123,13 +123,10 @@ app.get('/api/random', async (req, res) => {
 })
 
 app.post('/api/channels', async (req, res) => {
-    let sort1 = req.body.sort1 ? req.body.sort1 : 'subscribers';
-    let sort2 = req.body.sort2 ? req.body.sort2 : 'name';
+    let sort = req.body.sort ? req.body.sort : 'stats.subscribers';
     let options = {
-        sort1: sort1,
-        sort2: sort2,
-        order1: req.body.order1 ? req.body.order1 : 'desc',
-        order2: req.body.order2 ? req.body.order2 : 'desc',
+        sort: sort,
+        order: req.body.order ? req.body.order : 'desc',
         limit: 5,
         offset: req.body.offset ? req.body.offset : 0,
         search: req.body.search ? req.body.search : '',
@@ -182,7 +179,11 @@ app.listen(3002, () => {
     console.log('Server running on port 3002');
 })
 
-cache = await sendChannels({ sort1: 'subscribers', sort2: 'name', order1: 'desc', order2: 'desc', limit: 5, offset: 0, search: '' })
+cache = await sendChannels({ sort: 'stats.subscribers', order: 'desc', limit: 5, offset: 0, search: '' })
 totals = await db.initalLoad();
 fs.writeFileSync('./caches/totals.json', JSON.stringify(totals));
 fs.writeFileSync('./caches/index.json', JSON.stringify(cache));
+
+setTimeout(() => {
+    //fork('./updateAll.js', [process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASS, process.env.DATABASE, process.env.YOUTUBE_API_KEYS]);
+}, 1000);

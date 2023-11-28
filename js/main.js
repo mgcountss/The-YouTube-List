@@ -1,19 +1,17 @@
 let offset = 0;
 let end = false;
 let searching = false;
-let sort1 = 'subscribers';
-let sort2 = 'subscribers';
-let order1 = 'desc';
-let order2 = 'desc';
+let sort = 'stats.subscribers';
+let order = 'desc';
 let filters = [];
-let listValues = ['logo', 'name', 'subscribers', 'views', 'videos', 'country', 'joined'];
+let listValues = ['logo', 'name', 'subscribers', 'views', 'videos', 'country', 'joined', 'subscribers24', 'views24', 'videos24'];
 async function getChannels() {
     fetch('/api/channels', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ offset: offset, sort1: sort1, sort2: sort2, search: document.getElementById('search').value, order1: order1, order2: order2, filters: filters })
+        body: JSON.stringify({ offset: offset, sort: sort, search: document.getElementById('search').value, order: order, filters: filters })
     })
         .then(res => res.json())
         .then(data => {
@@ -48,7 +46,7 @@ async function getChannels() {
                                 } else if ((value == 'Subscribers (30D Gain)') || (value == 'Views (30D Gain)') || (value == 'Videos (30D Gain)')) {
                                     tds.push(`<td><h4 class="gain30">${channel.gains[(value.split(' (30')[0]).toLowerCase()].monthly.toLocaleString("en-US")}</h4></td>`)
                                 } else {
-                                    console.log(value)
+                                    //console.log(value)
                                 }
                             })
                             document.getElementById('table').innerHTML += `<tr onclick="openMenu('${channel.id}')">
@@ -175,27 +173,15 @@ function search() {
     } else {
         document.querySelector('.channels').innerHTML = '';
     }
-    sort1 = document.getElementById('sort1').value;
-    sort2 = document.getElementById('sort2').value;
-    order1 = document.getElementById('order1').value;
-    order2 = document.getElementById('order2').value;
+    sort = document.getElementById('sort').value;
+    order = document.getElementById('order').value;
     filters = [];
     let filter = document.querySelectorAll('.filter');
     for (let q = 0; q < filter.length; q++) {
         let type = filter[q].querySelector('.filterType').value;
         let operator = filter[q].querySelector('.filterOperator').value;
         let value = filter[q].querySelector('.filterValue').value;
-        if (operator == '=') {
-            filters.push(type + " " + operator + " " + value);
-        } else if (operator == '>') {
-            filters[type] = { $gt: value };
-        } else if (operator == '<') {
-            filters[type] = { $lt: value };
-        } else if (operator == '>=') {
-            filters[type] = { $gte: value };
-        } else if (operator == '<=') {
-            filters[type] = { $lte: value };
-        }
+        filters.push(type + " " + operator + " " + value);
     }
     document.getElementById('loader').style.display = "block";
     searching = true;
@@ -516,20 +502,16 @@ function addFilter() {
     let filter = document.createElement('div');
     filter.classList.add('filter');
     filter.innerHTML = `<select class="filterType" onchange="changeFilter(this)">
-    <option value="subscribers">Subscribers</option>
-    <option value="views">Views</option>
-    <option value="videos">Videos</option>
-    <option value="country">Country</option>
-    <option value="joined">Joined (year, month, day)</option>
-    <option value="subscribers24">Subscribers (24H Gain)</option>
-    <option value="views24">Views (24H Gain)</option>
-    <option value="videos24">Videos (24H Gain)</option>
-    <option value="subscribers7">Subscribers (7D Gain)</option>
-    <option value="views7">Views (7D Gain)</option>
-    <option value="videos7">Videos (7D Gain)</option>
-    <option value="subscribers30">Subscribers (30D Gain)</option>
-    <option value="views30">Views (30D Gain)</option>
-    <option value="videos30">Videos (30D Gain)</option>
+    <option value="stats.subscribers">Subscribers</option>
+    <option value="stats.views">Views</option>
+    <option value="stats.videos">Videos</option>
+    <option value="user.country">Country</option>
+    <option value="user.name">Name</option>
+    <option value="user.description">Description</option>
+    <option value="user.joined">Joined (year, month, day)</option>
+    <option value="gains.subscribers24">Subscribers (24H Gain)</option>
+    <option value="gains.views24">Views (24H Gain)</option>
+    <option value="gains.videos24">Videos (24H Gain)</option>
 </select>
 <select class="filterOperator">
     <option value="=">=</option>
@@ -547,23 +529,17 @@ function addSelection() {
     let selection = document.createElement('div');
     selection.classList.add('selection');
     selection.innerHTML = `<select class="selectionType">
-    <option value="logo">Logo</option>
-    <option value="name">Name</option>
-    <option value="description">Description</option>
-    <option value="subscribers">Subscribers</option>
-    <option value="views">Views</option>
-    <option value="videos">Videos</option>
-    <option value="country">Country</option>
-    <option value="joined">Joined</option>
-    <option value="subscribers24">Subscribers (24H Gain)</option>
-    <option value="views24">Views (24H Gain)</option>
-    <option value="videos24">Videos (24H Gain)</option>
-    <option value="subscribers7">Subscribers (7D Gain)</option>
-    <option value="views7">Views (7D Gain)</option>
-    <option value="videos7">Videos (7D Gain)</option>
-    <option value="subscribers30">Subscribers (30D Gain)</option>
-    <option value="views30">Views (30D Gain)</option>
-    <option value="videos30">Videos (30D Gain)</option>
+    <option value="user.logo">Logo</option>
+    <option value="user.name">Name</option>
+    <option value="user.description">Description</option>
+    <option value="stats.subscribers">Subscribers</option>
+    <option value="stats.views">Views</option>
+    <option value="stats.videos">Videos</option>
+    <option value="user.country">Country</option>
+    <option value="user.joined">Joined</option>
+    <option value="gains.subscribers24">Subscribers (24H Gain)</option>
+    <option value="gains.views24">Views (24H Gain)</option>
+    <option value="gains.videos24">Videos (24H Gain)</option>
 </select>
 <button class="removeFilter" onclick="removeFilter(this)">X</button>`
     document.querySelector('.selections').appendChild(selection);
@@ -603,23 +579,17 @@ function checkSavedListValues() {
         list.forEach(value => {
             document.querySelector('.selections').innerHTML += `<div class="selection">
             <select class="selectionType" onchange="changeFilter(this)">
-                <option value="logo" ${value == 'logo' ? 'selected' : ''}>Logo</option>
-                <option value="name" ${value == 'name' ? 'selected' : ''}>Name</option>
-                <option value="description" ${value == 'description' ? 'selected' : ''}>Description</option>
-                <option value="subscribers" ${value == 'subscribers' ? 'selected' : ''}>Subscribers</option>
-                <option value="views" ${value == 'views' ? 'selected' : ''}>Views</option>
-                <option value="videos" ${value == 'videos' ? 'selected' : ''}>Videos</option>
-                <option value="country" ${value == 'country' ? 'selected' : ''}>Country</option>
-                <option value="joined" ${value == 'joined' ? 'selected' : ''}>Joined</option>
-                <option value="subscribers24" ${value == 'subscribers24' ? 'selected' : ''}>Subscribers (24H Gain)</option>
-                <option value="views24" ${value == 'views24' ? 'selected' : ''}>Views (24H Gain)</option>
-                <option value="videos24" ${value == 'videos24' ? 'selected' : ''}>Videos (24H Gain)</option>
-                <option value="subscribers7" ${value == 'subscribers7' ? 'selected' : ''}>Subscribers (7D Gain)</option>
-                <option value="views7" ${value == 'views7' ? 'selected' : ''}>Views (7D Gain)</option>
-                <option value="videos7" ${value == 'videos7' ? 'selected' : ''}>Videos (7D Gain)</option>
-                <option value="subscribers30" ${value == 'subscribers30' ? 'selected' : ''}>Subscribers (30D Gain)</option>
-                <option value="views30" ${value == 'views30' ? 'selected' : ''}>Views (30D Gain)</option>
-                <option value="videos30" ${value == 'videos30' ? 'selected' : ''}>Videos (30D Gain)</option>
+                <option value="user.logo" ${value == 'logo' ? 'selected' : ''}>Logo</option>
+                <option value="user.name" ${value == 'name' ? 'selected' : ''}>Name</option>
+                <option value="user.description" ${value == 'description' ? 'selected' : ''}>Description</option>
+                <option value="stats.subscribers" ${value == 'subscribers' ? 'selected' : ''}>Subscribers</option>
+                <option value="stats.views" ${value == 'views' ? 'selected' : ''}>Views</option>
+                <option value="stats.videos" ${value == 'videos' ? 'selected' : ''}>Videos</option>
+                <option value="user.country" ${value == 'country' ? 'selected' : ''}>Country</option>
+                <option value="user.joined" ${value == 'joined' ? 'selected' : ''}>Joined</option>
+                <option value="gains.subscribers24" ${value == 'subscribers24' ? 'selected' : ''}>Subscribers (24H Gain)</option>
+                <option value="gains.views24" ${value == 'views24' ? 'selected' : ''}>Views (24H Gain)</option>
+                <option value="gains.videos24" ${value == 'videos24' ? 'selected' : ''}>Videos (24H Gain)</option>
             </select>
             <button class="removeFilter" onclick="removeFilter(this)">X</button>
         </div>`

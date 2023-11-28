@@ -71,6 +71,7 @@ const updateUser = async (userId, ids, failed) => {
             groups.push(ids.slice(i, i + 50));
         }
         for (let i = 0; i < groups.length; i++) {
+            console.log(`Updating ${i + 1}/${groups.length}`);
             try {
                 let link = `https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics,brandingSettings&id=${groups[i]}`;
                 if (!failed) {

@@ -6,10 +6,8 @@ console.log(load);
 let soFar = 0;
 
 let oldChannels = await oldDB.getall({
-    sort1: "subscribers",
-    sort2: "name",
-    order1: 'desc',
-    order2: 'desc',
+    sort: "subscribers",
+    order: 'desc',
     limit: 1000000,
     offset: 0,
     search: '',

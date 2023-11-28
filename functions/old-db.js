@@ -32,7 +32,7 @@ const getMappedSort = (sortOption) => {
 const getall = async (options) => {
   let query;
   try {
-    let { sort1, order1, sort2, order2, limit, offset, search, filters } = options;
+    let { sort, order, limit, offset, search, filters } = options;
     query = `SELECT COUNT(*) FROM users WHERE (name LIKE '%${search}%' OR id LIKE '%${search}%' OR description LIKE '%${search}%')`;
     if (search == '') {
       query = 'SELECT COUNT(*) FROM users';
@@ -53,7 +53,7 @@ const getall = async (options) => {
         }
       }
     }
-    query += ` ORDER BY ${getMappedSort(sort1)} ${order1 === "asc" ? "ASC" : "DESC"}, ${getMappedSort(sort2)} ${order2 === "asc" ? "ASC" : "DESC"}`
+    query += ` ORDER BY ${getMappedSort(sort)} ${order === "asc" ? "ASC" : "DESC"}, ${getMappedSort(sort)} ${order === "asc" ? "ASC" : "DESC"}`
     const connection = await pool.getConnection();
     const [rows2] = await connection.execute(query);
     query += ` LIMIT ${limit} OFFSET ${offset}`;
