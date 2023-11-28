@@ -222,11 +222,8 @@ const getall = async (options) => {
 }
 
 setInterval(() => {
-  for (var channel in db) {
-    db[channel].history = {};
-  }
   fs.writeFileSync("./db.json", JSON.stringify(db, {}));
-}, 10000);
+}, 120000);
 
 export default {
   add,
